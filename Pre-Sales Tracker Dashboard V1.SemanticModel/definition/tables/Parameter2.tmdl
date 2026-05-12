@@ -1,0 +1,48 @@
+table Parameter2
+	lineageTag: 191ede9f-8506-4de9-aa99-ba2d3ed3b69f
+
+	column Parameter2
+		lineageTag: e6a843f2-bdef-4418-8719-092917654c60
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parameter2 Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Parameter2 Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter2 Fields'
+		isHidden
+		lineageTag: 3077fe4c-1fd8-4497-affd-d2d03f28ae00
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parameter2 Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter2 Order'
+		isHidden
+		formatString: 0
+		lineageTag: 8dbc9019-e8fc-4a40-998e-c41a862c9a58
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Parameter2 = calculated
+		mode: import
+		source =
+				{
+				    ("Won Deals", NAMEOF('PreSales Tracker'[Won Deals]), 0),
+				    ("Lost Deals", NAMEOF('PreSales Tracker'[Lost Deals]), 1)
+				}
+
+	annotation PBI_Id = b7ec617c57084765b3ca5c3b0f1643ec
+

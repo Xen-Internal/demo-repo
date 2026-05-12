@@ -1,0 +1,50 @@
+table Parameter
+	lineageTag: ffc64767-e2c4-467d-94e3-c9e7a895b585
+
+	column Parameter
+		lineageTag: 7c388d3b-251b-4352-b201-5cd4a27b88e4
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parameter Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Parameter Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Fields'
+		isHidden
+		lineageTag: 3f92b937-df20-4930-a838-23eef6ba69b2
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parameter Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Order'
+		isHidden
+		formatString: 0
+		lineageTag: bd949c97-024f-491e-bdca-b6635bc5e3b2
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Parameter = calculated
+		mode: import
+		source =
+				{
+				    ("Stream", NAMEOF('PreSales Tracker'[Stream (Short)]), 0),
+				    ("Segments", NAMEOF('PreSales Tracker'[Segments]), 1),
+				    ("Region", NAMEOF('PreSales Tracker'[Region]), 2)
+				
+				}
+
+	annotation PBI_Id = bbceec6bed0143749e5f6cae7f612efa
+

@@ -1,0 +1,50 @@
+model Model
+	culture: en-IN
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-IN
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup 'Transform File from Query1'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'Transform File from Query1\Helper Queries'
+
+	annotation PBI_QueryGroupOrder = 0
+
+annotation PBI_QueryOrder = ["PreSales Tracker","Key Measures","Parameter1","Transform Sample File","Sample File","Transform File","AI & PD","Infra","AI/ML","MW & AD","AI&PD","CS","CI","SP","HR_Analytics"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+ref table 'PreSales Tracker'
+ref table DateTableTemplate_9696ff23-a878-4d24-a54f-2fdaaa969eae
+ref table LocalDateTable_5b5255c4-0239-4ee4-9cbe-e8a6c06579da
+ref table LocalDateTable_f3be4822-3f8f-4da4-96c8-4ae8a4419c0a
+ref table LocalDateTable_f4d0b60f-55ac-460e-8270-19a35f6f2621
+ref table LocalDateTable_0d2fb803-bde3-46df-a346-41c1dc04d948
+ref table LocalDateTable_47fe6e1b-e42a-4c7c-ae90-b21ce0c5e2b4
+ref table 'Key Measures'
+ref table LocalDateTable_471f374e-f4ec-47d6-b67c-69bcc5fb8b6d
+ref table Calendar
+ref table LocalDateTable_9540dd0b-3473-46b1-823b-290d2db3d1f9
+ref table Parameter
+ref table Parameter2
+ref table Parameter3
+ref table 'Funnel Stages'
+ref table 'Parameter 2'
+ref table 'Parameter 3'
+ref table LocalDateTable_76df4032-3b53-489d-93b0-8a8042d0c8dd
+ref table 'Parameter 4'
+ref table Infra
+ref table AI/ML
+ref table 'MW & AD'
+ref table AI&PD
+ref table CS
+ref table CI
+ref table SP
+ref table HR_Analytics
+
+ref cultureInfo en-IN
+
