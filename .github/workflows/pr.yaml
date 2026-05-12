@@ -1,11 +1,17 @@
-name: Auto PR Dev → prod
+name: Auto PR Dev → Prod
+
 on:
   push:
     branches:
       - dev
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
-  create-pr-to-main:
+  create-pr-to-prod:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,4 +27,4 @@ jobs:
           pr_body: |
             Automated PR from **dev** to **prod**.
             Please review and approve to promote to prod workspace.
-          github_token: ${{ github.token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
