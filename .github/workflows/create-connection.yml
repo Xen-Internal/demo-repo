@@ -24,6 +24,7 @@ jobs:
           SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
           WORKSPACE_NAME: ${{ secrets.FABRIC_PROD_WORKSPACE_NAME }}
           CONN_NAME: ${{ secrets.FABRIC_GIT_CONN_NAME }}
 
