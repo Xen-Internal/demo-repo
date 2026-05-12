@@ -29,7 +29,7 @@ param (
 # Connection with personal access token for GitHubSourceControl
 $gitHubPATConnection = @{
     connectivityType = "ShareableCloud"
-    displayName = "GH-Connection-01"
+    displayName = $displayName
     connectionDetails = @{
         type = "GitHubSourceControl"
         creationMethod = "GitHubSourceControl.Contents"
@@ -126,7 +126,7 @@ function GetErrorResponse($exception) {
 
 try {
     SetFabricHeaders
-	
+ 
     Write-Host "Creating connection with Git provider credentials..."
 
     $connectionsUrl = "$global:baseUrl/connections"
@@ -174,17 +174,17 @@ try {
     $workspace = GetWorkspaceByName $workspaceName 
     
     # Verify the existence of the requested workspace
-	if(!$workspace) {
-	  Write-Host "A workspace with the requested name was not found." -ForegroundColor Red
-	  return
-	}
-	
+ if(!$workspace) {
+   Write-Host "A workspace with the requested name was not found." -ForegroundColor Red
+   return
+ }
+ 
     # Update Git Credentials
     Write-Host "Updating the Git credentials for the current user in the workspace '$workspaceName'."
 
     $updateMyGitCredentialsUrl = "$global:baseUrl/workspaces/$($workspace.Id)/git/myGitCredentials"
 
-    $updateMyGitCredentialsBody = $myGitCredentials | ConvertTo-Json
+    $updateMyGitCredentialsBody = $configuredConnectionGitCredentials | ConvertTo-Json
 
     Invoke-RestMethod -Headers $global:fabricHeaders -Uri $updateMyGitCredentialsUrl -Method PATCH -Body $updateMyGitCredentialsBody
 
