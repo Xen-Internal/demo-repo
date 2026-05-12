@@ -1,5 +1,4 @@
 name: Auto PR Dev → prod
-
 on:
   push:
     branches:
