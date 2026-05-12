@@ -34,4 +34,4 @@ jobs:
             -clientId $env:CLIENT_ID `
             -servicePrincipalSecret $env:CLIENT_SECRET `
             -key $env:PAT_TOKEN `
-            -displayName "GitConnection"
+            -displayName "FabricGitConnection"
