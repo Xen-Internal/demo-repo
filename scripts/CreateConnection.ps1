@@ -46,47 +46,7 @@ $gitHubPATConnection = @{
     }
 }
 
-# ================= AUTH FUNCTIONS =================
-function SetFabricHeaders {
-    if ($principalType -eq "UserPrincipal") {
-        $secureFabricToken = GetSecureTokenForUserPrincipal
-    }
-    elseif ($principalType -eq "ManagedIdentity") {
-        $secureFabricToken = GetSecureTokenForManagedIdentity
-    }
-    elseif ($principalType -eq "ServicePrincipal") {
-        $secureFabricToken = GetSecureTokenForServicePrincipal
-    }
-    else {
-        throw "Invalid principal type."
-    }
-
-    $fabricToken = ConvertSecureStringToPlainText $secureFabricToken
-
-    $global:fabricHeaders = @{
-        "Content-Type"  = "application/json"
-        "Authorization" = "Bearer $fabricToken"
-    }
-}
-
-function GetSecureTokenForUserPrincipal {
-    Connect-AzAccount -TenantId $tenantId -Subscription $subscriptionId | Out-Null
-    return (Get-AzAccessToken -AsSecureString -ResourceUrl $global:resourceUrl).Token
-}
-
-function GetSecureTokenForManagedIdentity {
-    Connect-AzAccount -Identity -TenantId $tenantId | Out-Null
-    return (Get-AzAccessToken -AsSecureString -ResourceUrl $global:resourceUrl).Token
-}
-
-function GetSecureTokenForServicePrincipal {
-    $secureSecret = ConvertTo-SecureString $servicePrincipalSecret -AsPlainText -Force
-    $credential = New-Object System.Management.Automation.PSCredential ($clientId, $secureSecret)
-
-    Connect-AzAccount -ServicePrincipal -TenantId $tenantId -Credential $credential | Out-Null
-    return (Get-AzAccessToken -AsSecureString -ResourceUrl $global:resourceUrl).Token
-}
-
+# ================= FUNCTIONS =================
 function ConvertSecureStringToPlainText($secureString) {
     $ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureString)
     try {
@@ -94,6 +54,37 @@ function ConvertSecureStringToPlainText($secureString) {
     }
     finally {
         [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ptr)
+    }
+}
+
+function GetSecureTokenForServicePrincipal {
+    $secureSecret = ConvertTo-SecureString $servicePrincipalSecret -AsPlainText -Force
+    $credential = New-Object System.Management.Automation.PSCredential ($clientId, $secureSecret)
+
+    Connect-AzAccount `
+        -ServicePrincipal `
+        -TenantId $tenantId `
+        -Subscription $subscriptionId `
+        -Credential $credential | Out-Null
+
+    return (Get-AzAccessToken -AsSecureString -ResourceUrl $global:resourceUrl).Token
+}
+
+function SetFabricHeaders {
+    switch ($principalType) {
+        "ServicePrincipal" {
+            $secureFabricToken = GetSecureTokenForServicePrincipal
+        }
+        default {
+            throw "Only ServicePrincipal authentication is supported in this script."
+        }
+    }
+
+    $fabricToken = ConvertSecureStringToPlainText $secureFabricToken
+
+    $global:fabricHeaders = @{
+        "Content-Type"  = "application/json"
+        "Authorization" = "Bearer $fabricToken"
     }
 }
 
@@ -117,21 +108,23 @@ function GetErrorResponse($exception) {
 
 function GetWorkspaceByName($workspaceName) {
     $getWorkspacesUrl = "$global:baseUrl/workspaces"
-    $workspaces = (Invoke-RestMethod -Headers $global:fabricHeaders -Uri $getWorkspacesUrl -Method GET).value
+    $workspaces = (Invoke-RestMethod `
+        -Headers $global:fabricHeaders `
+        -Uri $getWorkspacesUrl `
+        -Method GET).value
+
     return $workspaces | Where-Object { $_.DisplayName -eq $workspaceName }
 }
 
-# ================= MAIN EXECUTION =================
+# ================= MAIN =================
 try {
     Write-Host "Authenticating to Microsoft Fabric..."
     SetFabricHeaders
 
-    Write-Host "Creating connection with Git provider credentials..."
+    Write-Host "Creating GitHub connection in Fabric..."
 
     $connectionsUrl = "$global:baseUrl/connections"
     $connectionBody = $gitHubPATConnection | ConvertTo-Json -Depth 10
-
-    Write-Host "Creating connection: $displayName"
 
     $response = Invoke-RestMethod `
         -Headers $global:fabricHeaders `
@@ -139,11 +132,11 @@ try {
         -Method POST `
         -Body $connectionBody
 
-    Write-Host "Connection created successfully! Connection ID: $($response.id)" -ForegroundColor Green
+    Write-Host "Connection created successfully. ID: $($response.id)" -ForegroundColor Green
 }
 catch {
     $errorResponse = GetErrorResponse($_.Exception)
-    Write-Host "Failed to create connection. Error response: $errorResponse" -ForegroundColor Red
+    Write-Host "Failed to create connection: $errorResponse" -ForegroundColor Red
     throw
 }
 
@@ -152,7 +145,7 @@ if (-not $response -or -not $response.id) {
 }
 
 try {
-    Write-Host "Authenticating again before workspace update..."
+    Write-Host "Refreshing Fabric authentication..."
     SetFabricHeaders
 
     $workspace = GetWorkspaceByName $workspaceName
@@ -167,12 +160,12 @@ try {
 
     $updateMyGitCredentialsBody = @{
         gitCredentials = @{
-            source = "ConfiguredConnection"
-            connectionId = $response.id
+            credentialSource = "ConfiguredConnection"
+            connectionId     = $response.id
         }
     } | ConvertTo-Json -Depth 5
 
-    Write-Host "PATCH Payload:"
+    Write-Host "PATCH payload:"
     Write-Host $updateMyGitCredentialsBody
 
     Invoke-RestMethod `
@@ -185,6 +178,6 @@ try {
 }
 catch {
     $errorResponse = GetErrorResponse($_.Exception)
-    Write-Host "Failed to update Git credentials for workspace '$workspaceName'. Error response: $errorResponse" -ForegroundColor Red
+    Write-Host "Failed to update Git credentials: $errorResponse" -ForegroundColor Red
     throw
 }
