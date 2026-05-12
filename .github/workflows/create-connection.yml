@@ -34,7 +34,7 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
         run: |
-          pwsh -File ./scripts/Create-Git-Connection.ps1 `
+          pwsh -File ./scripts/CreateConnection.ps1 `
             -workspaceName $env:WORKSPACE_NAME `
             -principalType "ServicePrincipal" `
             -tenantId $env:TENANT_ID `
