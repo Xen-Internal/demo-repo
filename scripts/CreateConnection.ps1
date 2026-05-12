@@ -184,7 +184,7 @@ try {
 
     $updateMyGitCredentialsUrl = "$global:baseUrl/workspaces/$($workspace.Id)/git/myGitCredentials"
 
-    $updateMyGitCredentialsBody = $myGitCredentials | ConvertTo-Json
+    $updateMyGitCredentialsBody = $configuredConnectionGitCredentials | ConvertTo-Json
 
     Invoke-RestMethod -Headers $global:fabricHeaders -Uri $updateMyGitCredentialsUrl -Method PATCH -Body $updateMyGitCredentialsBody
 
