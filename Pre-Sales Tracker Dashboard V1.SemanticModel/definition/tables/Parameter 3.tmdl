@@ -1,0 +1,48 @@
+table 'Parameter 3'
+	lineageTag: 08c4193e-be52-43de-8bd5-081f5e14e4d3
+
+	column Parameter
+		lineageTag: 8d43d3e6-5728-40e5-9d4d-c8d835a533ca
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parameter Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Parameter Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Fields'
+		isHidden
+		lineageTag: 5bbca022-1631-4a49-ad5d-3a3d3b805d09
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parameter Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Order'
+		isHidden
+		formatString: 0
+		lineageTag: 2110297b-1989-42b2-a94d-59816f63815f
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Parameter 3' = calculated
+		mode: import
+		source =
+				{
+				    ("Month", NAMEOF('Calendar'[MonthName]), 0),
+				    ("Stream", NAMEOF('PreSales Tracker'[Stream (Short)]), 1)
+				}
+
+	annotation PBI_Id = 12fd12af7070495c84b0f817941c6592
+

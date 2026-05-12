@@ -1,0 +1,1098 @@
+table 'PreSales Tracker'
+	lineageTag: 328ef0d0-9c40-4540-bcbc-4aac3019115c
+
+	measure 'Won Deals' = CALCULATE([Total Projects],'PreSales Tracker'[Deal Status]="Deal Won")
+		formatString: 0
+		lineageTag: 0301ead6-e8aa-4d85-abcb-4c5fbd47e139
+
+	measure 'Lost Deals' = CALCULATE([Total Projects],'PreSales Tracker'[Deal Status] in ({"Lost","Dropped"}))
+		formatString: 0
+		lineageTag: cf49955f-97f0-4d71-801f-5d20d22230d8
+
+	measure 'In Progress Deals' = CALCULATE([Total Projects],not('PreSales Tracker'[Deal Status] in {"Deal Won","Lost","Dropped"}))
+		formatString: 0
+		lineageTag: 5f1867cb-2989-4f0e-ac9b-af1f88510b0c
+
+	measure Avg_Days_Taken = ROUNDUP(CALCULATE(AVERAGE('PreSales Tracker'[Avg Days Taken]),'PreSales Tracker'[Deal Status]="Deal Won"),0)
+		formatString: 0
+		lineageTag: f48e238b-7556-49bc-9568-f000dbf20e87
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Progressive Funnel Projects' = ```
+			
+			VAR SelectedRank = SELECTEDVALUE('Funnel Stages'[Stage Rank])
+			RETURN
+			CALCULATE(
+			    DISTINCTCOUNT('PreSales Tracker'[Project Name]),
+			    FILTER(
+			        'PreSales Tracker',
+			        'PreSales Tracker'[Stage Rank] >= SelectedRank
+			    )
+			)
+			
+			```
+		formatString: 0
+		lineageTag: bdfac363-83d0-49c1-878a-c58a957a8ff2
+
+	measure 'Future Followups Count' = ```
+			
+			COUNTROWS(
+			    FILTER(
+			        'PreSales Tracker',
+			        'PreSales Tracker'[Next Follow up]> TODAY()
+			    )
+			)
+			
+			```
+		formatString: 0
+		lineageTag: fc9cf709-fa2f-4069-9d48-57031c0a4ebd
+
+	measure status_wondeal =
+			
+			var wondeals=CALCULATE([Total Projects],'PreSales Tracker'[Deal Status]="Deal Won")
+			var lostdeals=CALCULATE([Total Projects],'PreSales Tracker'[Deal Status]="Lost")
+			RETURN
+			IF(wondeals=BLANK(),"No Data To Display",IF(lostdeals=BLANK(),"No Data To Display",""))
+		lineageTag: 4ad85f97-b745-4304-9445-9dc2a6ef913f
+
+	measure status_lostdeal =
+			
+			var wondeals=CALCULATE([Total Projects],'PreSales Tracker'[Deal Status]="Lost")
+			RETURN
+			IF(wondeals=BLANK(),"No Data To Display","")
+		lineageTag: 61bc3fb2-97ad-4ee2-af30-71ffdd8b52eb
+
+	measure 'Projects Closing This Month' =
+			
+			CALCULATE(
+			    [Total Projects],
+			    FILTER(
+			        ALL('PreSales Tracker'),
+			        MONTH('PreSales Tracker'[Closure Date]) = MONTH(TODAY()) &&
+			        YEAR('PreSales Tracker'[Closure Date]) = YEAR(TODAY())
+			    )
+			)
+		formatString: 0
+		lineageTag: 462d0cf8-15c6-463c-9cad-e76ec0b4b1da
+
+	column 'Project Name'
+		dataType: string
+		lineageTag: 38cbed4e-36ce-486d-90e3-12540c28517b
+		summarizeBy: none
+		sourceColumn: Project Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Segments
+		dataType: string
+		lineageTag: c435f541-5beb-4b85-9901-383cfc01292d
+		summarizeBy: none
+		sourceColumn: Segments
+
+		annotation SummarizationSetBy = Automatic
+
+	column TPID
+		dataType: double
+		lineageTag: 57432df1-b5da-4037-ae56-8b9396d569a4
+		summarizeBy: count
+		sourceColumn: TPID
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Priority
+		dataType: string
+		lineageTag: ed5efde2-2655-4fbd-970f-f4a6a3eae833
+		summarizeBy: none
+		sourceColumn: Priority
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Customer Type'
+		dataType: string
+		lineageTag: 9b017bd9-b16e-4d44-a279-cbdb0f60f26e
+		summarizeBy: none
+		sourceColumn: Customer Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Deal Type'
+		dataType: string
+		lineageTag: 3fa9c985-6f94-417c-b2f8-43117f657e37
+		summarizeBy: none
+		sourceColumn: Deal Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Opportunity Type'
+		dataType: string
+		lineageTag: 01818e58-edf5-4bbd-8437-d8c841abdc63
+		summarizeBy: none
+		sourceColumn: Opportunity Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column Stream
+		dataType: string
+		lineageTag: 125ad25b-c27e-466d-85eb-85c2254b08d3
+		summarizeBy: none
+		sourceColumn: Stream
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sales Play'
+		dataType: string
+		lineageTag: 2d0c41de-6724-42a7-ba04-858faddacf00
+		summarizeBy: none
+		sourceColumn: Sales Play
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Contact Person'
+		dataType: string
+		lineageTag: 0a6c910d-892b-4c34-b32b-4876b736413f
+		summarizeBy: none
+		sourceColumn: Contact Person
+
+		annotation SummarizationSetBy = Automatic
+
+	column Designation
+		dataType: string
+		lineageTag: 1d7f48df-1433-4148-9383-3135299c4103
+		summarizeBy: none
+		sourceColumn: Designation
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Email Id'
+		dataType: string
+		lineageTag: aa6e5ce4-4df2-47fe-ab86-116a991f6886
+		summarizeBy: none
+		sourceColumn: Email Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Phone Number'
+		dataType: string
+		lineageTag: ac116585-a110-4bf8-8b89-9a674e3ccb6d
+		summarizeBy: none
+		sourceColumn: Phone Number
+
+		annotation SummarizationSetBy = Automatic
+
+	column Website
+		dataType: string
+		lineageTag: 7a2f8ed4-a427-4f93-b18e-60727461525d
+		summarizeBy: none
+		sourceColumn: Website
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: a96aa70d-205d-494b-9f0d-4bf42b80b5b6
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: 484b1d2a-910e-4f39-afa1-4aa2bb54f511
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Lead From'
+		dataType: string
+		lineageTag: b7ba2dac-26e4-48f0-bdda-628209421612
+		summarizeBy: none
+		sourceColumn: Lead From
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Microsoft SPOC'
+		dataType: string
+		lineageTag: 39029909-8e43-4bbe-a09a-fd88b972288c
+		summarizeBy: none
+		sourceColumn: Microsoft SPOC
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Project Type'
+		dataType: string
+		lineageTag: 042c6c11-3981-4226-9531-1f545ba51400
+		summarizeBy: none
+		sourceColumn: Project Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Deal Status'
+		dataType: string
+		lineageTag: 5e2112d3-a041-4860-9b14-a0143cad1696
+		summarizeBy: none
+		sourceColumn: Deal Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Opportunity Start Date'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 45a78533-878e-454d-901f-86d636cb1b35
+		summarizeBy: none
+		sourceColumn: Opportunity Start Date
+
+		variation Variation
+			isDefault
+			relationship: 0241a168-6dc5-4aeb-ad83-406e36537dd7
+			defaultHierarchy: LocalDateTable_5b5255c4-0239-4ee4-9cbe-e8a6c06579da.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Closure Date'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: a15dd5d4-6cf5-4dc4-a350-bffefe3fb015
+		summarizeBy: none
+		sourceColumn: Closure Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Next Follow up'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 9b0c9d91-48c6-4f97-bd35-d7aa0ea7f72c
+		summarizeBy: none
+		sourceColumn: Next Follow up
+
+		variation Variation
+			isDefault
+			relationship: 2aa286e9-6e59-4a1b-ac15-572174401dce
+			defaultHierarchy: LocalDateTable_f3be4822-3f8f-4da4-96c8-4ae8a4419c0a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Azure Consumption Revenue (Annual) ($)'
+		dataType: double
+		lineageTag: 028c61bf-0b9a-4cfc-a1e4-9a954cf55a9f
+		summarizeBy: sum
+		sourceColumn: Azure Consumption Revenue (Annual) ($)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'MRR (₹)'
+		dataType: decimal
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: f4b4c5ec-0da0-4943-ad92-f9fc5d7590da
+		summarizeBy: sum
+		sourceColumn: MRR (₹)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column 'MRR ($)'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: c7041d80-102e-4b06-8f68-3d0c1d305843
+		summarizeBy: sum
+		sourceColumn: MRR ($)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'AMM ($)'
+		dataType: decimal
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 611fce62-49f9-4179-b313-124014b96858
+		summarizeBy: sum
+		sourceColumn: AMM ($)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column 'Services Value (₹)'
+		dataType: double
+		lineageTag: c1a63c86-bb96-4599-a211-13030fb55cce
+		summarizeBy: sum
+		sourceColumn: Services Value (₹)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Managed Services (₹)'
+		dataType: decimal
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 3a36e240-6162-441b-a2c1-f78ce8cdf0e4
+		summarizeBy: sum
+		sourceColumn: Managed Services (₹)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column 'OTC (₹)'
+		dataType: decimal
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: c84bdbc9-9852-48ec-8d43-f3aa62b42c5c
+		summarizeBy: sum
+		sourceColumn: OTC (₹)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column 'PC ID'
+		dataType: string
+		lineageTag: edc28271-631c-48c5-a890-e25942176717
+		summarizeBy: none
+		sourceColumn: PC ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Renewal Date'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 5887afef-69c0-4fe1-9093-44d4b070a2fd
+		summarizeBy: none
+		sourceColumn: Renewal Date
+
+		variation Variation
+			isDefault
+			relationship: d6e5f8a9-069f-4b67-b26a-5e3fdc052d04
+			defaultHierarchy: LocalDateTable_f4d0b60f-55ac-460e-8270-19a35f6f2621.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Delivery Status'
+		dataType: string
+		lineageTag: b4e270bf-ca2f-4afb-9182-217a05fd72fc
+		summarizeBy: none
+		sourceColumn: Delivery Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Program Name'
+		dataType: string
+		lineageTag: 8cd82dda-88e9-4e2c-925b-cf7981a792e4
+		summarizeBy: none
+		sourceColumn: Program Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: 3ecd6c56-10fc-495b-9fd0-eb48975855a7
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Next Action'
+		dataType: string
+		lineageTag: 68ba3907-2c1c-4f74-974c-52bd51c97a3c
+		summarizeBy: none
+		sourceColumn: Next Action
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Doc Store Link'
+		dataType: string
+		lineageTag: 4895a116-8bcb-4fa4-a268-cabff916a8f8
+		summarizeBy: none
+		sourceColumn: Doc Store Link
+
+		annotation SummarizationSetBy = Automatic
+
+	column Reminders
+		dataType: string
+		lineageTag: a9b0e9c7-c4d4-4cd6-a3ce-890f1afee8ff
+		summarizeBy: none
+		sourceColumn: Reminders
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Engagement Status'
+		dataType: string
+		lineageTag: a177aa05-8ebe-473f-b943-32f1c6f167bf
+		summarizeBy: none
+		sourceColumn: Engagement Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Reminder Start Date'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: d93c6b96-a7a2-41b7-9624-9303a8fe38ba
+		summarizeBy: none
+		sourceColumn: Reminder Start Date
+
+		variation Variation
+			isDefault
+			relationship: f49c776e-18b4-4caa-9be5-d06fb26df148
+			defaultHierarchy: LocalDateTable_0d2fb803-bde3-46df-a346-41c1dc04d948.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Win (%)'
+		dataType: string
+		lineageTag: 7333371c-0612-44e3-9f00-7fde677f3a7a
+		summarizeBy: none
+		sourceColumn: Win (%)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Opportunity Number'
+		dataType: string
+		lineageTag: e6e8e7e1-aaa7-46f8-89ca-2505d6a6ee16
+		summarizeBy: none
+		sourceColumn: Opportunity Number
+
+		annotation SummarizationSetBy = Automatic
+
+	column Modified
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: ac7867e9-185e-4db9-80b8-08a6eb85cbb7
+		summarizeBy: none
+		sourceColumn: Modified
+
+		variation Variation
+			isDefault
+			relationship: 4212006f-333d-4c8f-9f5c-4c2ec7e52a4d
+			defaultHierarchy: LocalDateTable_47fe6e1b-e42a-4c7c-ae90-b21ce0c5e2b4.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Created
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 809d118f-abeb-4cdb-b11c-336a7b8db960
+		summarizeBy: none
+		sourceColumn: Created
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Color Tag'
+		dataType: string
+		lineageTag: e42bea08-3487-4751-8324-64af5677442e
+		summarizeBy: none
+		sourceColumn: Color Tag
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Compliance Asset Id'
+		dataType: string
+		lineageTag: 3092f95f-6d62-4d75-a8e5-0c180592879f
+		summarizeBy: none
+		sourceColumn: Compliance Asset Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Pillar
+		dataType: string
+		lineageTag: a66bbf9a-e724-4da4-b04b-6bb1ab167391
+		summarizeBy: none
+		sourceColumn: Pillar
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID
+		dataType: int64
+		formatString: 0
+		lineageTag: 1de3b21f-8f9c-4cfe-972b-d4d35db5de49
+		summarizeBy: count
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Content Type'
+		dataType: string
+		lineageTag: 06999d99-a8ef-4d93-bec6-41a427f7e09a
+		summarizeBy: none
+		sourceColumn: Content Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column Version
+		dataType: string
+		lineageTag: 618f6135-f266-4d0d-a998-5fc65fb740c6
+		summarizeBy: none
+		sourceColumn: Version
+
+		annotation SummarizationSetBy = Automatic
+
+	column Attachments
+		dataType: string
+		lineageTag: a555c3f4-722f-4f5b-8f94-fa26aa4e8095
+		summarizeBy: none
+		sourceColumn: Attachments
+
+		annotation SummarizationSetBy = Automatic
+
+	column Edit
+		dataType: string
+		lineageTag: f2fa31a7-6150-4de6-97c6-16020aab7b1f
+		summarizeBy: none
+		sourceColumn: Edit
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type
+		dataType: string
+		lineageTag: f0d7ee12-1f83-4638-a890-8b1c2208ee4f
+		summarizeBy: none
+		sourceColumn: Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Item Child Count'
+		dataType: string
+		lineageTag: ac3b5dc8-9e64-4c8a-a4f5-4ac6642a4108
+		summarizeBy: none
+		sourceColumn: Item Child Count
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Folder Child Count'
+		dataType: string
+		lineageTag: 691b6e20-550b-46ce-a454-dc50c551a197
+		summarizeBy: none
+		sourceColumn: Folder Child Count
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Label setting'
+		dataType: string
+		lineageTag: bf41666b-d559-4c07-87e9-e71f42d9ed25
+		summarizeBy: none
+		sourceColumn: Label setting
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Retention label'
+		dataType: string
+		lineageTag: ed1d2cad-c5cb-4ce4-94ec-2a4412112298
+		summarizeBy: none
+		sourceColumn: Retention label
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Retention label Applied'
+		dataType: string
+		lineageTag: 056f1805-a213-4a4b-a0e2-486f9599aeb9
+		summarizeBy: none
+		sourceColumn: Retention label Applied
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Label applied by'
+		dataType: string
+		lineageTag: d5006fda-5659-4797-842e-fbea97a609a1
+		summarizeBy: none
+		sourceColumn: Label applied by
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Item is a Record'
+		dataType: string
+		lineageTag: 52cda0f6-8959-4b75-a509-db9e6893b967
+		summarizeBy: none
+		sourceColumn: Item is a Record
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'App Created By'
+		dataType: string
+		lineageTag: 4afe5d00-20e5-4bef-ad1c-6f6dc8914a7d
+		summarizeBy: none
+		sourceColumn: App Created By
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'App Modified By'
+		dataType: string
+		lineageTag: 1c591013-e0a5-460d-b827-93163193ed44
+		summarizeBy: none
+		sourceColumn: App Modified By
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Account Manager.id'
+		dataType: string
+		lineageTag: 7df509de-5a75-4336-9975-2347c7b2116b
+		summarizeBy: none
+		sourceColumn: Account Manager.id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Account Manager'
+		dataType: string
+		lineageTag: ffec3468-f6c3-42e1-b310-345d106123eb
+		summarizeBy: none
+		sourceColumn: Account Manager
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Account Manager.email'
+		dataType: string
+		lineageTag: 1fb74547-d84c-4160-851c-081ccf127ab3
+		summarizeBy: none
+		sourceColumn: Account Manager.email
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Account Manager.sip'
+		dataType: string
+		lineageTag: c3bf9010-7c86-4a78-b95e-511b655da410
+		summarizeBy: none
+		sourceColumn: Account Manager.sip
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Account Manager.picture'
+		dataType: string
+		lineageTag: b2076e67-ff47-4fe0-8c7a-c5b4108c84d4
+		dataCategory: ImageUrl
+		summarizeBy: none
+		sourceColumn: Account Manager.picture
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Account Manager.department'
+		dataType: string
+		lineageTag: 36d8ae03-fb6d-4671-93c7-35111a509659
+		summarizeBy: none
+		sourceColumn: Account Manager.department
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Account Manager.jobTitle'
+		dataType: string
+		lineageTag: 79c960e6-0ddc-490e-a19a-bf154bb7f721
+		summarizeBy: none
+		sourceColumn: Account Manager.jobTitle
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CustomerName.lookupId'
+		dataType: string
+		lineageTag: f515b80c-a6e4-4430-ad66-a8585fe57e91
+		summarizeBy: none
+		sourceColumn: CustomerName.lookupId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CustomerName.lookupValue'
+		dataType: string
+		lineageTag: 1b30b4c4-da9f-4e9e-add4-55cdd96cfd46
+		summarizeBy: none
+		sourceColumn: CustomerName.lookupValue
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CustomerName.isSecretFieldValue'
+		dataType: string
+		lineageTag: 1e4e6942-f0f3-4829-acaa-3b42624992f7
+		summarizeBy: none
+		sourceColumn: CustomerName.isSecretFieldValue
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: string
+		lineageTag: 2eeedf7d-3250-4f01-8d4c-84c5c6309578
+		summarizeBy: none
+		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: string
+		lineageTag: 9a000a20-de83-4d0d-9b66-f86259eea385
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Created By.id'
+		dataType: string
+		lineageTag: 51b33f7e-d85c-4132-8bc9-e0ef4f8650f3
+		summarizeBy: none
+		sourceColumn: Created By.id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Created By.title'
+		dataType: string
+		lineageTag: 2db5cc21-b61c-45a7-ab1f-a849ad943735
+		summarizeBy: none
+		sourceColumn: Created By.title
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Created By.email'
+		dataType: string
+		lineageTag: ca912011-ed8b-4b5d-a68f-352585ac157f
+		summarizeBy: none
+		sourceColumn: Created By.email
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Created By.sip'
+		dataType: string
+		lineageTag: 4f31e769-ec75-4af7-b0c0-cffefc8b5236
+		summarizeBy: none
+		sourceColumn: Created By.sip
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Created By.picture'
+		dataType: string
+		lineageTag: 717aaa35-1f98-4f64-ae96-fe3cd6c492eb
+		dataCategory: ImageUrl
+		summarizeBy: none
+		sourceColumn: Created By.picture
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Created By.department'
+		dataType: string
+		lineageTag: 082efbd7-1d91-4a00-b316-73ab5dc1eeac
+		summarizeBy: none
+		sourceColumn: Created By.department
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Created By.jobTitle'
+		dataType: string
+		lineageTag: 0511924e-a3b3-4526-9b0d-d4338a4ec33c
+		summarizeBy: none
+		sourceColumn: Created By.jobTitle
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Modified By.id'
+		dataType: string
+		lineageTag: 6e799778-1259-4bbf-a81d-b7534782a69d
+		summarizeBy: none
+		sourceColumn: Modified By.id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Modified By.title'
+		dataType: string
+		lineageTag: a32a40e8-5c91-4d57-873b-c33a48fafecb
+		summarizeBy: none
+		sourceColumn: Modified By.title
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Modified By.email'
+		dataType: string
+		lineageTag: 19624a68-1f4a-49b9-8a0b-f752f4eeff8c
+		summarizeBy: none
+		sourceColumn: Modified By.email
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Modified By.sip'
+		dataType: string
+		lineageTag: 3afcec34-b6c7-4262-a1fb-a10e12b5f659
+		summarizeBy: none
+		sourceColumn: Modified By.sip
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Modified By.picture'
+		dataType: string
+		lineageTag: b1e96a3c-0e70-42d3-8094-fbc3df1d54f1
+		summarizeBy: none
+		sourceColumn: Modified By.picture
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Modified By.department'
+		dataType: string
+		lineageTag: 7cf8ee5d-a5a0-4cf6-8ffc-c76aceb6773e
+		summarizeBy: none
+		sourceColumn: Modified By.department
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Modified By.jobTitle'
+		dataType: string
+		lineageTag: 5aa4bc43-7a43-4c64-9e19-8d2e20a6cf83
+		summarizeBy: none
+		sourceColumn: Modified By.jobTitle
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Presales SPOC.id'
+		dataType: string
+		lineageTag: 3e397397-4cdb-4ea1-a239-b024619eeb11
+		summarizeBy: none
+		sourceColumn: Presales SPOC.id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Presales SPOC.title'
+		dataType: string
+		lineageTag: 28a5579d-c87e-4b4a-9e46-b75029763e08
+		summarizeBy: none
+		sourceColumn: Presales SPOC.title
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Presales SPOC.email'
+		dataType: string
+		lineageTag: da22ac86-cf28-4754-9033-70f87bfd1b1d
+		summarizeBy: none
+		sourceColumn: Presales SPOC.email
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Presales SPOC.sip'
+		dataType: string
+		lineageTag: 968ad4b4-5999-4173-bdb7-17e76f8a4124
+		summarizeBy: none
+		sourceColumn: Presales SPOC.sip
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Presales SPOC.picture'
+		dataType: string
+		lineageTag: 61f18ccc-37ac-4fbc-90b9-7da136fb276d
+		summarizeBy: none
+		sourceColumn: Presales SPOC.picture
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Presales SPOC.department'
+		dataType: string
+		lineageTag: 974f2707-cc93-4388-8e75-1eb11454a7cf
+		summarizeBy: none
+		sourceColumn: Presales SPOC.department
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Presales SPOC.jobTitle'
+		dataType: string
+		lineageTag: cae501d4-4bfc-4e2c-8317-cbf16b3a4794
+		summarizeBy: none
+		sourceColumn: Presales SPOC.jobTitle
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Annual License Revenue (₹)'
+		dataType: decimal
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 8df709ee-3fd9-463c-a4f3-2fae7e9557b1
+		summarizeBy: sum
+		sourceColumn: Annual License Revenue (₹)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column 'Monthly License Revenue (₹)'
+		dataType: decimal
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: b59c82aa-cee4-4071-aca4-72ce21c6314b
+		summarizeBy: sum
+		sourceColumn: Monthly License Revenue (₹)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column Win
+		dataType: int64
+		formatString: 0
+		lineageTag: 43a752b3-6653-44e8-a7ef-03fc2ead97f4
+		summarizeBy: sum
+		sourceColumn: Win
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Next Follow up Date Only'
+		dataType: dateTime
+		formatString: d mmmm
+		lineageTag: 0fe7c9f7-6019-43cd-b905-faa54e46d262
+		summarizeBy: none
+		sourceColumn: Next Follow up Date Only
+
+		variation Variation
+			isDefault
+			relationship: 2865c7d8-cfd3-4f5d-b297-8fcf247ee6c3
+			defaultHierarchy: LocalDateTable_471f374e-f4ec-47d6-b67c-69bcc5fb8b6d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column 'Stream (Short)'
+		dataType: string
+		lineageTag: 4c1195df-2f8d-4fa0-9c1d-b4353a5e7831
+		summarizeBy: none
+		sourceColumn: Stream (Short)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Avg Days Taken'
+		dataType: int64
+		formatString: 0
+		lineageTag: 18e603f5-eedc-49de-815f-79835323ad3f
+		summarizeBy: sum
+		sourceColumn: Avg Days Taken
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Deal Status Group' = ```
+			
+			SWITCH (
+			    TRUE(),
+			    'PreSales Tracker'[Deal Status] IN { "Hot Lead" }, "Hot",
+			    'PreSales Tracker'[Deal Status] IN { "Warm Lead" }, "Warm",
+			    'PreSales Tracker'[Deal Status] IN { "Cold Lead" }, "Cold",
+			    'PreSales Tracker'[Deal Status] IN { "Deal Won", "Won" }, "Deal Won",
+			    'PreSales Tracker'[Deal Status] IN { "Lost", "Dropped" }, "Lost",
+			    'PreSales Tracker'[Deal Status] IN { "On Hold", "Follow up", "Proposal Submitted" }, "In Progress",
+			    "Others"
+			)
+			
+			```
+		lineageTag: 64fabcc8-1e7f-40fc-b2e4-29d288732e16
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Stage Rank' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    'PreSales Tracker'[Deal Status] = "Cold Lead", 1,
+			    'PreSales Tracker'[Deal Status] = "Warm Lead", 2,
+			    'PreSales Tracker'[Deal Status] = "Hot Lead", 3,
+			
+			    'PreSales Tracker'[Deal Status] IN {"Follow up", "Proposal Submitted", "On Hold","Others"}, 4,
+			
+			    'PreSales Tracker'[Deal Status] IN {"Deal Won", "Won"}, 6,
+			    'PreSales Tracker'[Deal Status] IN {"Lost","Dropped"},5,
+			    BLANK()
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 3bc31229-b307-44e8-a2c0-589d3f87fc02
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Project
+		dataType: string
+		lineageTag: 9387db2a-f691-45e0-a7b6-7eafec9b4ff3
+		summarizeBy: none
+		sourceColumn: Project
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Presales Refresh' = UTCNOW() + TIME(5,30,00)
+		formatString: General Date
+		lineageTag: 68a357cc-57d2-4226-aba9-ddec620ba868
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: dd24b904-b0f3-4dbd-a6ee-8b0cf1fd3258
+			defaultHierarchy: LocalDateTable_76df4032-3b53-489d-93b0-8a8042d0c8dd.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Next Action (Short)'
+		dataType: string
+		lineageTag: 20d5c72a-5b39-432c-b243-74e1461cdd77
+		summarizeBy: none
+		sourceColumn: Next Action (Short)
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Next Follow up Date Only Hierarchy'
+		lineageTag: fe63cb28-3b29-4229-b748-7be3d3dd1111
+
+		level 'Next Follow up Date Only'
+			lineageTag: bb442d62-aab4-41c2-8747-cda05c89c5c4
+			column: 'Next Follow up Date Only'
+
+	partition 'PreSales Tracker' = m
+		mode: import
+		source =
+				let
+				    Source = SharePoint.Tables("https://xencia1.sharepoint.com/sites/XenciaSalesTracker/", [Implementation="2.0", ViewMode="All"]),
+				    #"f2041ce2-1e57-4603-b598-b57cd1f4224d" = Source{[Id="f2041ce2-1e57-4603-b598-b57cd1f4224d"]}[Items],
+				    #"Expanded Account Manager" = Table.ExpandListColumn(#"f2041ce2-1e57-4603-b598-b57cd1f4224d", "Account Manager"),
+				    #"Expanded Account Manager1" = Table.ExpandRecordColumn(#"Expanded Account Manager", "Account Manager", {"id", "title", "email", "sip", "picture", "department", "jobTitle"}, {"Account Manager.id", "Account Manager.title", "Account Manager.email", "Account Manager.sip", "Account Manager.picture", "Account Manager.department", "Account Manager.jobTitle"}),
+				    #"Expanded CustomerName" = Table.ExpandListColumn(#"Expanded Account Manager1", "CustomerName"),
+				    #"Expanded CustomerName1" = Table.ExpandRecordColumn(#"Expanded CustomerName", "CustomerName", {"lookupId", "lookupValue", "isSecretFieldValue"}, {"CustomerName.lookupId", "CustomerName.lookupValue", "CustomerName.isSecretFieldValue"}),
+				    #"Expanded Pillar" = Table.ExpandListColumn(#"Expanded CustomerName1", "Pillar"),
+				    #"Expanded Created By" = Table.ExpandListColumn(#"Expanded Pillar", "Created By"),
+				    #"Expanded Modified By" = Table.ExpandListColumn(#"Expanded Created By", "Modified By"),
+				    #"Expanded Created By1" = Table.ExpandRecordColumn(#"Expanded Modified By", "Created By", {"id", "title", "email", "sip", "picture", "department", "jobTitle"}, {"Created By.id", "Created By.title", "Created By.email", "Created By.sip", "Created By.picture", "Created By.department", "Created By.jobTitle"}),
+				    #"Expanded Modified By1" = Table.ExpandRecordColumn(#"Expanded Created By1", "Modified By", {"id", "title", "email", "sip", "picture", "department", "jobTitle"}, {"Modified By.id", "Modified By.title", "Modified By.email", "Modified By.sip", "Modified By.picture", "Modified By.department", "Modified By.jobTitle"}),
+				    #"Expanded Presales SPOC" = Table.ExpandListColumn(#"Expanded Modified By1", "Presales SPOC"),
+				    #"Expanded Presales SPOC1" = Table.ExpandRecordColumn(#"Expanded Presales SPOC", "Presales SPOC", {"id", "title", "email", "sip", "picture", "department", "jobTitle"}, {"Presales SPOC.id", "Presales SPOC.title", "Presales SPOC.email", "Presales SPOC.sip", "Presales SPOC.picture", "Presales SPOC.department", "Presales SPOC.jobTitle"}),
+				    #"Duplicated Column" = Table.DuplicateColumn(#"Expanded Presales SPOC1", "Win (%)", "Win (%) - Copy"),
+				    #"Renamed Columns" = Table.RenameColumns(#"Duplicated Column",{{"Win (%) - Copy", "Win"}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Renamed Columns","%","",Replacer.ReplaceText,{"Win"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Replaced Value",{{"Win", Int64.Type}}),
+				    #"Duplicated Column1" = Table.DuplicateColumn(#"Changed Type", "Next Follow up", "Next Follow up - Copy"),
+				    #"Renamed Columns1" = Table.RenameColumns(#"Duplicated Column1",{{"Next Follow up - Copy", "Next Follow up Date Only"}}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Renamed Columns1",{{"Next Follow up Date Only", type date}}),
+				    #"Extracted Date" = Table.TransformColumns(#"Changed Type1",{}),
+				    #"Inserted First Characters" = Table.AddColumn(#"Extracted Date", "First Characters", each Text.Start([Next Action], 30), type text),
+				    #"Added Suffix" = Table.TransformColumns(#"Inserted First Characters", {{"First Characters", each _ & "...", type text}}),
+				    #"Renamed Columns2" = Table.RenameColumns(#"Added Suffix",{{"First Characters", "Next Action (Short)"}}),
+				    #"Duplicated Column2" = Table.DuplicateColumn(#"Renamed Columns2", "Stream", "Stream - Copy"),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Duplicated Column2","Infra Implementation","Infra",Replacer.ReplaceText,{"Stream - Copy"}),
+				    #"Replaced Value7" = Table.ReplaceValue(#"Replaced Value1","AI/ML","Data & AI",Replacer.ReplaceText,{"Stream - Copy"}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value7","Cloud Support","Cloud Support",Replacer.ReplaceText,{"Stream - Copy"}),
+				    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2","Cloud Implementation","Cloud Implementation",Replacer.ReplaceText,{"Stream - Copy"}),
+				    #"Replaced Value4" = Table.ReplaceValue(#"Replaced Value3","App Innovation & Product Development","App Innovation",Replacer.ReplaceText,{"Stream - Copy"}),
+				    #"Replaced Value5" = Table.ReplaceValue(#"Replaced Value4","MW & App Development","MWP",Replacer.ReplaceText,{"Stream - Copy"}),
+				    #"Replaced Value6" = Table.ReplaceValue(#"Replaced Value5","Security Practice","Security",Replacer.ReplaceText,{"Stream - Copy"}),
+				    #"Renamed Columns3" = Table.RenameColumns(#"Replaced Value6",{{"Stream - Copy", "Stream (Short)"}}),
+				    #"Extracted Date1" = Table.TransformColumns(#"Renamed Columns3",{{"Created", DateTime.Date, type date}}),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Extracted Date1",{{"Closure Date", type date}}),
+				    #"Renamed Columns4" = Table.RenameColumns(#"Changed Type2",{{"Account Manager.title", "Account Manager"}}),
+				    #"Changed Type3" = Table.TransformColumnTypes(#"Renamed Columns4",{{"Opportunity Start Date", type date}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type3", "Avg Days Taken", each Duration.Days([Closure Date]-[Opportunity Start Date])),
+				    #"Changed Type4" = Table.TransformColumnTypes(#"Added Custom",{{"Avg Days Taken", Int64.Type}}),
+				    #"Inserted First Characters1" = Table.AddColumn(#"Changed Type4", "First Characters", each Text.Start([Project Name], 30), type text),
+				    #"Renamed Columns5" = Table.RenameColumns(#"Inserted First Characters1",{{"First Characters", "Project"}}),
+				    #"Added Custom1" = Table.AddColumn(#"Renamed Columns5", "Next Action (Short).1", each if [Next Action] = null then ""
+				  else if Text.Length([Next Action]) < 30
+				       then [Next Action]
+				       else Text.Start([Next Action], 30) & "..."),
+				    #"Removed Columns" = Table.RemoveColumns(#"Added Custom1",{"Next Action (Short)"}),
+				    #"Renamed Columns6" = Table.RenameColumns(#"Removed Columns",{{"Next Action (Short).1", "Next Action (Short)"}})
+				in
+				    #"Renamed Columns6"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

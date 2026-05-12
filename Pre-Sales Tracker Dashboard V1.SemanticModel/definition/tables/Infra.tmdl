@@ -1,0 +1,33 @@
+table Infra
+	lineageTag: 3d6e7b31-0f3b-4300-913f-beed7830c4b9
+
+	measure 'Total Oppts Infra' = CALCULATE([Total Projects],'PreSales Tracker'[Stream (Short)]="Infra")
+		formatString: 0
+		lineageTag: 87bfd066-897e-4b57-9466-af8a7c46da53
+
+	measure 'In progress Infra' = CALCULATE([In Progress Deals],'PreSales Tracker'[Stream (Short)]="infra")
+		formatString: 0
+		lineageTag: 5473c07e-c77a-4f3f-89b3-3920de2441db
+
+	measure 'Won Deals Infra' = CALCULATE([Won Deals],'PreSales Tracker'[Stream (Short)]="Infra")
+		formatString: 0
+		lineageTag: bf0dcc1a-1480-4ca5-9713-554bcba41d5a
+
+	measure 'Lost Deals Infra' = CALCULATE([Lost Deals],'PreSales Tracker'[Stream (Short)]="Infra")
+		formatString: 0
+		lineageTag: e626b89a-583c-4492-8d5f-4609b9c88552
+
+	partition Infra = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

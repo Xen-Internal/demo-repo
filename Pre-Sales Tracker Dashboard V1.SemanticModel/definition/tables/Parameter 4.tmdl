@@ -1,0 +1,50 @@
+table 'Parameter 4'
+	lineageTag: fab5b226-cbe5-4807-abe3-0de0e7c3e341
+
+	column Parameter
+		lineageTag: ec0f72ed-d45f-4543-a085-0f40eb64254d
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parameter Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Parameter Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Fields'
+		isHidden
+		lineageTag: 5381ca46-de75-408b-a78c-0533d7a56618
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parameter Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Order'
+		isHidden
+		formatString: 0
+		lineageTag: c74a229e-9576-48d8-a447-6579c4d49eca
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Parameter 4' = calculated
+		mode: import
+		source =
+				{
+				    ("Total Oppts", NAMEOF('Key Measures'[Total Projects]), 0),
+				    ("Won Deals", NAMEOF('PreSales Tracker'[Won Deals]), 1),
+				    ("Lost Deals", NAMEOF('PreSales Tracker'[Lost Deals]), 2),
+				    ("Win Rate (%)", NAMEOF('Key Measures'[Average win%]), 3)
+				}
+
+	annotation PBI_Id = e0639faa41ea42f88be16ec90b2ea43a
+

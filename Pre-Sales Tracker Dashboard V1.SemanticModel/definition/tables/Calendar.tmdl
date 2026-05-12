@@ -1,0 +1,79 @@
+table Calendar
+	lineageTag: 3edfe9cb-d3b1-4682-a308-2bc593abfb3e
+
+	column Date
+		formatString: Short Date
+		lineageTag: b8a6a322-3481-4f6a-adc7-846b5c345edb
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: cef8f21f-a980-45cf-8344-2295ce5a41ab
+			defaultHierarchy: LocalDateTable_9540dd0b-3473-46b1-823b-290d2db3d1f9.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Month = MONTH([Date])
+		formatString: 0
+		lineageTag: f2aa2a53-fb68-4329-b097-3ff6f5365d25
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter = QUARTER([Date])
+		formatString: 0
+		lineageTag: 95a8454e-e6a5-41d8-b78b-6d80608de6dc
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName = FORMAT([Date].[Date],"mmm")
+		lineageTag: 4f79ccc0-655b-4326-97f2-cd26e34183c2
+		summarizeBy: none
+		sortByColumn: 'Fiscal Month'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fiscal Year' = IF([Month]<=3,"FY "&RIGHT(YEAR([Date])-1,2)&"-"&RIGHT(YEAR([Date]),2),"FY "&RIGHT(YEAR([Date]),2)&"-"&RIGHT(YEAR([Date])+1,2))
+		lineageTag: e07a9a68-2a18-45ba-9239-de5047a4d795
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fiscal Month' = Month(EDATE([Date],-3))
+		formatString: 0
+		lineageTag: 6d058f17-ae79-4f6f-91e5-9d2e388d3590
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fiscal Quarter' = QUARTER(EDATE([Date],-3))
+		formatString: 0
+		lineageTag: e66f1fc0-5adf-4918-a8c7-1a06fd6cf532
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column QuarterName = SWITCH('Calendar'[Fiscal Quarter],1,"AMJ",2,"JAS",3,"OND","JFM")
+		lineageTag: a47668be-3007-4090-be16-778493b4b0c8
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year = YEAR('Calendar'[Date])
+		formatString: 0
+		lineageTag: aae998fc-4778-4445-88dd-0c2ab904344e
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar = calculated
+		mode: import
+		source = CALENDAR(min('PreSales Tracker'[Created]),max('PreSales Tracker'[Created]))
+
+	annotation PBI_Id = 0a50a0362b234f5d960b82808681ea69
+

@@ -1,0 +1,57 @@
+expression Parameter1 = #"Sample File" meta [IsParameterQuery=true, BinaryIdentifier=#"Sample File", Type="Binary", IsParameterQueryRequired=true]
+	lineageTag: a327fa94-7782-4ab7-9fe5-a0116b1044d3
+	queryGroup: 'Transform File from Query1\Helper Queries'
+
+	annotation PBI_ResultType = Binary
+
+expression 'Transform Sample File' =
+		let
+		    Source = Excel.Workbook(Parameter1, null, true),
+		    QuarterMonthCalendar_Sheet = Source{[Item="QuarterMonthCalendar",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(QuarterMonthCalendar_Sheet, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+	lineageTag: a441fb08-3058-4e32-8b62-7a2f32192a69
+	queryGroup: 'Transform File from Query1'
+
+	annotation PBI_ResultType = Table
+
+expression 'Sample File' =
+		let
+		    Source = SharePoint.Files("https://xencia1.sharepoint.com/sites/XenciaInsights-Data", [ApiVersion = 15]),
+		    #"Filtered Rows" = Table.SelectRows(Source, each ([Name] = "QuarterMonthCalendar.xlsx")),
+		    Navigation1 = #"Filtered Rows"{0}[Content]
+		in
+		    Navigation1
+	lineageTag: b7d24264-9aad-45de-b5b9-d9be54736cdc
+	queryGroup: 'Transform File from Query1\Helper Queries'
+
+	annotation PBI_ResultType = Binary
+
+expression 'Transform File' =
+		let
+		    Source = (Parameter1 as binary) => let
+		    Source = Excel.Workbook(Parameter1, null, true),
+		    QuarterMonthCalendar_Sheet = Source{[Item="QuarterMonthCalendar",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(QuarterMonthCalendar_Sheet, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+		in
+		    Source
+	mAttributes: [ FunctionQueryBinding = "{""exemplarFormulaName"":""Transform Sample File""}" ]
+	lineageTag: b0df1cc1-8a41-4af4-a3dd-56327a6e7e54
+	queryGroup: 'Transform File from Query1\Helper Queries'
+
+	annotation PBI_ResultType = Function
+
+expression 'AI & PD' =
+		let
+		    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+		    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+		    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+		in
+		    #"Removed Columns"
+	lineageTag: 71afd4c5-0491-4607-b59e-f84abc9f05a3
+
+	annotation PBI_ResultType = Table
+
