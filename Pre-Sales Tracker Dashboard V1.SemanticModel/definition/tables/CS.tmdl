@@ -1,0 +1,31 @@
+table CS
+	lineageTag: 2b6414b5-dd84-4513-ac19-8e4bd90bd226
+
+	measure 'Total Oppts CS' = CALCULATE([Total Projects],'PreSales Tracker'[Stream (Short)]="Cloud Support")
+		formatString: 0
+		lineageTag: ae41a80c-abd8-4b50-8697-02e966b356a9
+
+	measure 'In progress CS' = CALCULATE([In Progress Deals],'PreSales Tracker'[Stream (Short)]="Cloud Support")
+		formatString: 0
+		lineageTag: 2cd6368f-f27e-4975-8fd8-3f4f0a020ebc
+
+	measure 'Won Deals CS' = CALCULATE([Won Deals],'PreSales Tracker'[Stream (Short)]="Cloud Support")
+		formatString: 0
+		lineageTag: 7fdedb41-579f-4684-8878-4d6a48875cad
+
+	measure 'Lost Deals CS' = CALCULATE([Lost Deals],'PreSales Tracker'[Stream (Short)]="Cloud Support")
+		formatString: 0
+		lineageTag: 2e107d34-c51e-4d65-83a7-cb83f5372122
+
+	partition CS = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

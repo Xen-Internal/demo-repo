@@ -1,0 +1,49 @@
+relationship 0241a168-6dc5-4aeb-ad83-406e36537dd7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'PreSales Tracker'.'Opportunity Start Date'
+	toColumn: LocalDateTable_5b5255c4-0239-4ee4-9cbe-e8a6c06579da.Date
+
+relationship 2aa286e9-6e59-4a1b-ac15-572174401dce
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'PreSales Tracker'.'Next Follow up'
+	toColumn: LocalDateTable_f3be4822-3f8f-4da4-96c8-4ae8a4419c0a.Date
+
+relationship d6e5f8a9-069f-4b67-b26a-5e3fdc052d04
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'PreSales Tracker'.'Renewal Date'
+	toColumn: LocalDateTable_f4d0b60f-55ac-460e-8270-19a35f6f2621.Date
+
+relationship f49c776e-18b4-4caa-9be5-d06fb26df148
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'PreSales Tracker'.'Reminder Start Date'
+	toColumn: LocalDateTable_0d2fb803-bde3-46df-a346-41c1dc04d948.Date
+
+relationship 4212006f-333d-4c8f-9f5c-4c2ec7e52a4d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'PreSales Tracker'.Modified
+	toColumn: LocalDateTable_47fe6e1b-e42a-4c7c-ae90-b21ce0c5e2b4.Date
+
+relationship 2865c7d8-cfd3-4f5d-b297-8fcf247ee6c3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'PreSales Tracker'.'Next Follow up Date Only'
+	toColumn: LocalDateTable_471f374e-f4ec-47d6-b67c-69bcc5fb8b6d.Date
+
+relationship cef8f21f-a980-45cf-8344-2295ce5a41ab
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendar.Date
+	toColumn: LocalDateTable_9540dd0b-3473-46b1-823b-290d2db3d1f9.Date
+
+relationship 41ed5d51-434e-7aa1-9638-1c8c893f9aaa
+	isActive: false
+	fromColumn: 'PreSales Tracker'.Created
+	toColumn: Calendar.Date
+
+relationship 9063a34e-386c-e2e4-3ba5-b4425c11f3b7
+	fromColumn: 'PreSales Tracker'.'Closure Date'
+	toColumn: Calendar.Date
+
+relationship dd24b904-b0f3-4dbd-a6ee-8b0cf1fd3258
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'PreSales Tracker'.'Presales Refresh'
+	toColumn: LocalDateTable_76df4032-3b53-489d-93b0-8a8042d0c8dd.Date
+

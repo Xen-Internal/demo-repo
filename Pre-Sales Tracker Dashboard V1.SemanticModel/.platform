@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Pre-Sales Tracker Dashboard V1"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "be29cf0e-de5a-8ee2-4e22-ce35496ef58e"
+  }
+}

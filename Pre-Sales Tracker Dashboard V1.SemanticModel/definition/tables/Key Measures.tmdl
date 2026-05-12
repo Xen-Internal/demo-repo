@@ -1,0 +1,1455 @@
+table 'Key Measures'
+	lineageTag: dc088f45-79d7-436f-abf3-93bbc70d83e2
+
+	measure 'Total Projects' =
+			
+			var projects=DISTINCTCOUNT('PreSales Tracker'[Project Name])
+			var new=CALCULATE(projects,USERELATIONSHIP('Calendar'[Date],'PreSales Tracker'[Created]))
+			RETURN
+			if(new=BLANK(),0,new)
+		formatString: 0
+		lineageTag: 77ceec88-0b63-4eaa-8430-a2f3df920f39
+
+	measure 'Total MRR' = ```
+			CALCULATE(SUM('PreSales Tracker'[MRR ($)]),'PreSales Tracker'[Deal Status]="Deal Won")
+			
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: b5522184-25d5-43a4-bfe7-c0cd611d2c35
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total AMM' = SUM('PreSales Tracker'[AMM ($)])
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: e468cc39-07fb-4143-9560-19936c51ef48
+
+	measure 'Service Value' = ```
+			CALCULATE(SUM('PreSales Tracker'[Services Value (₹)]),'PreSales Tracker'[Deal Status]="Deal Won")
+			
+			```
+		formatString: "₹"\ #,0.00;#,0.00\ -"₹";"₹"\ #,0.00
+		lineageTag: 98467608-0ced-457d-861d-ceeba93c15ac
+
+		annotation PBI_FormatHint = {"currencyCulture":"as-IN"}
+
+	measure 'Azure Consumption Revinue' = SUM('PreSales Tracker'[Azure Consumption Revenue (Annual) ($)])
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 87ea0fad-3985-48db-aa8c-d1b5e5af449f
+
+	measure 'Average win%' =
+			
+			var Deal_won=CALCULATE(count('PreSales Tracker'[Win]),'PreSales Tracker'[Deal Status]="Deal Won")
+			var Deal_Lost_Won=CALCULATE(count('PreSales Tracker'[Win]),'PreSales Tracker'[Deal Status] in {"Deal Won","Lost","Dropped"})
+			var new=Deal_won/Deal_Lost_Won
+			RETURN
+			if(new=BLANK(),0,new)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 3dc4e674-68a6-4c69-9708-fac7cc5273e6
+
+	measure 'No of Customers' = DISTINCTCOUNT('PreSales Tracker'[CustomerName.lookupValue])
+		formatString: 0
+		lineageTag: 7a8628ec-1fdc-4323-b6e5-147045a1782e
+
+	measure Min = 0
+		lineageTag: 17c76de2-3d44-417e-94d1-fb6076978608
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Max = 100
+		lineageTag: a1d2f73b-b4e3-437a-b9c0-8cc02beae262
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Annual License Revenue' = CALCULATE(SUM('PreSales Tracker'[Annual License Revenue (₹)]))
+		formatString: "₹"\ #,0.00;#,0.00\ -"₹";"₹"\ #,0.00
+		lineageTag: c381d053-3908-4e06-a72d-27bacb3eaaf7
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Total OTC' = SUM('PreSales Tracker'[OTC (₹)])
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 0692d1d5-1455-4341-97e8-75bbdb532e11
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Total ACR (USD)' = ```
+			
+			var acr=CALCULATE(([Total MRR]*12),'PreSales Tracker'[Deal Status]="Deal Won")
+			RETURN
+			IF(acr=BLANK(),0,acr)
+			
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: f6974552-79af-417d-a8d4-9f0feb45967f
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'MRR (INR)' = ```
+			CALCULATE(SUM('PreSales Tracker'[MRR (₹)]),'PreSales Tracker'[Deal Status]="Deal Won")
+			
+			```
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 7c88a0b1-18b3-41a1-a09a-29e78fa3221d
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Total ACR (INR)' = ```
+			
+			CALCULATE([MRR (INR)]*12)
+			
+			```
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 0d4b7f8d-f8f0-4add-a3ee-3ac376d7426d
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Managed Service Value (Rs)' = ```
+			CALCULATE(SUM('PreSales Tracker'[Managed Services (₹)]))
+			
+			```
+		formatString: "₹"\ #,0.00;#,0.00\ -"₹";"₹"\ #,0.00
+		lineageTag: 4ff73ae7-c8d8-4b1b-952f-6e88bebeda2b
+
+		annotation PBI_FormatHint = {"currencyCulture":"as-IN"}
+
+	measure 'Total AMM (USD)' =
+			
+			var amm=CALCULATE(SUM('PreSales Tracker'[AMM ($)]),'PreSales Tracker'[Deal Status]="Deal Won")
+			RETURN
+			IF(amm=BLANK(),0,amm)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 45499628-a94b-4750-aa40-03c7635f2353
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure Greeting = ```
+			
+			VAR CurrentDateTime = NOW()+TIME(5,30,0)  -- Adjusting for timezone (5.5 hours ahead)
+			VAR Hour_ = HOUR(CurrentDateTime)
+			VAR Minute_ = MINUTE(CurrentDateTime)
+			VAR TimeInMinutes = Hour_ * 60 + Minute_
+			
+			-- Greeting based on more accurate time:
+			VAR greet = 
+			    SWITCH(
+			        TRUE(),
+			        TimeInMinutes < 720, "😊 Good morning, ",                   -- Before 12:00 PM
+			        TimeInMinutes >= 720 && TimeInMinutes < 1020, "😊 Good afternoon, ",  -- 12:00 PM to 5:00 PM
+			        "😊 Good evening, "                                         -- After 5:00 PM
+			    )
+			
+			-- Extract user's first and last name from email:
+			VAR UseName = LEFT(USERPRINCIPALNAME(), FIND("@", USERPRINCIPALNAME()) - 1)
+			VAR FirstName = 
+			    UPPER(LEFT(UseName, 1)) & 
+			    MID(UseName, 2, FIND(".", UseName) - 2)
+			VAR LastName = 
+			    UPPER(LEFT(MID(UseName, FIND(".", UseName) + 1, LEN(UseName)), 1)) & 
+			    MID(UseName, FIND(".", UseName) + 2, LEN(UseName)) 
+			
+			VAR new = FirstName & " " & LastName
+			
+			RETURN
+			greet & new
+			```
+		lineageTag: 14c9e339-6186-4ef5-9456-9a061dc9b699
+
+	measure Date_Time = "Date: "&FORMAT(DATE(YEAR(TODAY()),MONTH(TODAY()),DAY(TODAY())),"dd-mmm-yyyy")
+		lineageTag: da87f0bb-7101-41f0-a5e2-fc6a07f53f15
+
+	measure change_Style2 =
+			
+			"<div style='font-family:calibri; font-size:18px; line-height:1.7em; text-align:center;'>" &
+			"<h1 style='margin-bottom:10px; font-size:20px; font-family:calibri; font-weight:bold;'>
+			Here's a summary of the key insights from Pre-Sales dashboard for
+			<span style='color:#FFFFFF; font-weight:bold;'>" & [currentFY] & "</span></h1>" &
+			
+			"<ul style='list-style-position:inside; text-align:center; padding:0; margin:15px 0; display:inline-block;'>" &
+			"<li style='font-size:20px; text-align:left;'>Total No of Projects : <span style='color:#FFFFFF; font-weight:bold; font-size:16px;'>" & [Total Projects] & "</span></li>" &
+			"<li style='font-size:20px; text-align:left;'> Total ACR : <span style='color:#FFFFFF; font-weight:bold; font-size:16px;'>" & [Total ACR (USD)] & "</span></li>" &
+			"<li style='font-size:20px; text-align:left;'> Total MRR : <span style='color:#FFFFFF; font-weight:bold; font-size:16px;'>" & [Total MRR] & "</span></li>" &
+			"</ul>" &
+			
+			"</div>"
+		lineageTag: e73dc111-2db3-461f-b8c5-08c62b057b49
+
+	measure currentFY =
+			
+			VAR TodayDate = TODAY()
+			VAR CurrentYear = YEAR(TodayDate)
+			VAR CurrentMonth = MONTH(TodayDate)
+			-- If fiscal year starts in April (i.e., Month 4)
+			VAR FYStartMonth = 5
+			VAR FYStartYear =
+			    IF(CurrentMonth >= FYStartMonth, CurrentYear, CurrentYear - 1)
+			VAR FYEndYear = FYStartYear + 1
+			RETURN
+			    "FY " &
+			    RIGHT(FYStartYear, 2) & "-" &
+			    RIGHT(FYEndYear, 2)
+		lineageTag: 4fe5eb70-e20b-438a-9a92-40b51af4b36a
+
+	measure change_Style3 =
+			
+			"<div style='font-family:calibri; font-size:18px; line-height:1.7em; text-align:center; color:#FFFFFF;'>" &
+			"<h1 style='margin-bottom:10px; font-size:20px; font-family:calibri; font-weight:bold; color:#FFFFFF;'>
+			Here's a summary of the key insights from Pre-sales dashboard for
+			<span style='color:#FFFFFF; font-weight:bold;'>" & [currentFY] & "</span></h1>" &
+			
+			"<ul style='list-style-position:inside; text-align:center; padding:0; margin:15px 0; display:inline-block; color:#FFFFFF;'>" &
+			"<li style='font-size:20px; text-align:left; color:#FFFFFF;'>Total No of Opportunities : <span style='color:#FFFFFF; font-weight:bold; font-size:20px;'>" & [Total Projects] & "</span></li>" &
+			"<li style='font-size:20px; text-align:left; color:#FFFFFF;'> Active Opportunities : <span style='color:#FFFFFF; font-weight:bold; font-size:20px;'>"  &[Active Opportunities]  &  "</span></li>" &
+			"<li style='font-size:20px; text-align:left; color:#FFFFFF;'> Win Rate (%) : <span style='color:#FFFFFF; font-weight:bold; font-size:20px;'>" &  ROUND([Average win%]*100,0) &"%" &"</span></li>" &
+			"</ul>" &
+			
+			"</div>"
+		lineageTag: f9e912f6-8da1-4a85-88ce-8667afb43a52
+
+	measure 'Actual Revenue' =
+			
+			var rev=CALCULATE([tot],'PreSales Tracker'[Deal Status]="Deal Won")
+			RETURN
+			IF(rev=BLANK(),0,rev)
+		formatString: "₹"\ #,0.00;#,0.00\ -"₹";"₹"\ #,0.00
+		lineageTag: 28dd8832-1196-4440-9f19-f5ba378b6072
+
+		annotation PBI_FormatHint = {"currencyCulture":"as-IN"}
+
+	measure 'Last Month - Total Projects' = ```
+			
+			var CurrMoth=month(TODAY())
+			var CurrYear=Year(TODAY())
+			var prevMonth=IF(CurrMoth=1,12,CurrMoth-1)
+			var prevYear=if(prevMonth=12,max('Calendar'[Year])-1,max('Calendar'[Year]))
+			return
+			CALCULATE([Total Projects],'Calendar'[Month]=prevMonth,'Calendar'[Year]=prevYear)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 5d84ab70-7bfb-49be-b7bd-22e07af483fe
+
+	measure text_PM = "LM : "
+		lineageTag: d785cd01-4398-48c5-92c7-7f30f19fa307
+
+	measure 'MoM Growth - Total Projects' =
+			
+			var No_projects=[Total Projects]
+			var current_month=CALCULATE([Total Projects],'Calendar'[Month]=MONTH(TODAY()))
+			var previous_month=SWITCH(month(TODAY()),4,4,5,4,6,5,7,6,8,7,9,8,10,9,11,10,12,11,1,12,2,1,3,2)
+			var previous_month_projects=CALCULATE([Total Projects],'Calendar'[Month]=previous_month)
+			var no_month=SWITCH(month(TODAY()),4,1,5,1,6,2,7,3,8,4,9,5,10,6,11,7,12,8,1,9,2,10,3,11)
+			var Month_projects=No_projects-current_month
+			var Average_projects=Month_projects/no_month
+			return
+			DIVIDE((previous_month_projects-Average_projects),(Average_projects))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: eccd5001-83d5-495a-8f60-f5407a41e009
+
+	measure Text_MoM = "MoM% : "
+		lineageTag: 53abea8d-313f-4286-944f-117775da8588
+
+	measure 'Emoji - Total Projects' = IF([MoM Growth - Total Projects]<0,"🔴","🟢")
+		lineageTag: e3253efe-82d5-4b34-8d21-8ce2efaad583
+
+	measure 'MoM Growth - ACR' =
+			
+			DIVIDE([Last Month - ACR]-[Second Last Month - ACR],[Second Last Month - ACR])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 03b6c9d7-3929-407b-bd6a-da77c9c04ab0
+
+	measure Measure
+		lineageTag: 4ebb6af4-0829-47ce-9cde-5016f69a060b
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	measure 'Last Month - ACR' = ```
+			
+			VAR CurrMonth = MONTH ( TODAY() )
+			VAR CurrYear  = YEAR ( TODAY() )
+			
+			VAR PrevMonth = IF ( CurrMonth = 1, 12, CurrMonth - 1 )
+			VAR PrevYear  = IF ( PrevMonth = 12, CurrYear - 1, CurrYear )
+			
+			RETURN
+			CALCULATE (
+			    [Total ACR (USD)],
+			 
+			    'Calendar'[Month] = PrevMonth,
+			    'Calendar'[Year]  = PrevYear
+			)
+			
+			```
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 933601cd-6d44-4db9-abd0-adcbb763dcbb
+
+	measure text_pm_acr = "LM : "&"$"&ROUND(([Last Month - ACR]/1000),2)&"K"
+		lineageTag: 371d19ea-61a5-450d-95b9-182c277e3040
+
+	measure Text_MoM_ACR = "MoM% : "&ROUND([MoM Growth - ACR],3)*100&"%"
+		lineageTag: f1bcbfb5-d1b7-4025-a2f2-ca380e20d060
+
+	measure MoM_acr_Emoji = IF([MoM Growth - ACR]<0,"🔴","🟢")
+		lineageTag: 4432a55d-0a71-41b8-88f2-a37365c166df
+
+	measure 'Last Month - MRR ($)' = ```
+			
+			IF (
+			    MONTH ( TODAY() ) = 4,
+			    CALCULATE (
+			        [Total MRR],
+			        
+			        'Calendar'[Fiscal Year]
+			            = "FY "
+			                & ( MID ( MAX ( 'Calendar'[Fiscal Year] ), 3, 3 ) - 1 )
+			                & "-"
+			                & ( RIGHT ( MAX ( 'Calendar'[Fiscal Year] ), 2 ) - 1 ),
+			        'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			    ),
+			    IF (
+			        MONTH ( TODAY() ) = 1,
+			        CALCULATE (
+			            [Total MRR],
+			            
+			            'Calendar'[Month] = 12
+			        ),
+			        CALCULATE (
+			            [Total MRR],
+			            
+			            'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			        )
+			    )
+			)
+			
+			```
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 6f8be97a-b029-4ea4-bca0-f823d3e05150
+
+	measure 'MoM Growth - MRR' =
+			
+			DIVIDE([Last Month - MRR ($)]-[Second Last Month - MRR ($)],[Second Last Month - MRR ($)])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 5286062e-d052-43f6-aee9-f0516596e7f9
+
+	measure 'Emoji - MRR' = IF([MoM Growth - MRR]<0,"🔴","🟢")
+		lineageTag: dd2b8832-9dd8-4273-9c4c-19410e926ff8
+
+	measure text_pm_mrr = "LM : "&"$"&ROUND(([Last Month - MRR ($)]/1000),2)&"K"
+		lineageTag: 3a921f39-4e4d-4796-a3e3-b0f54e98e92e
+
+	measure Text_MoM_MRR = "MoM% : "&ROUND([MoM Growth - MRR],3)*100&"%"
+		lineageTag: 26f2c10c-7731-448e-8703-35afdc21cdcc
+
+	measure 'Last Month - AMM ($)' = ```
+			
+			IF (
+			    MONTH ( TODAY() ) = 4,
+			    CALCULATE (
+			        [Total AMM (USD)],
+			       
+			        'Calendar'[Fiscal Year]
+			            = "FY "
+			                & ( MID ( MAX ( 'Calendar'[Fiscal Year] ), 3, 3 ) - 1 )
+			                & "-"
+			                & ( RIGHT ( MAX ( 'Calendar'[Fiscal Year] ), 2 ) - 1 ),
+			        'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			    ),
+			    IF (
+			        MONTH ( TODAY() ) = 1,
+			        CALCULATE (
+			            [Total AMM (USD)],
+			            
+			            'Calendar'[Month] = 12
+			        ),
+			        CALCULATE (
+			            [Total AMM (USD)],
+			            
+			            'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			        )
+			    )
+			)
+			
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: ee300aea-5101-4d37-a6c8-b0ba46d834f4
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure text_pm_amm = "LM : "&"$"&ROUND(([Last Month - AMM ($)]/1000),2)&"K"
+		lineageTag: 1515aa96-5bdd-40d0-acbf-91cfb1731e60
+
+	measure 'MoM Growth - AMM' =
+			
+			DIVIDE([Last Month - AMM ($)]-[Second Last Month - AMM ($)],[Second Last Month - AMM ($)])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 60fdc73a-fa26-4063-b6e6-87fcc8b04176
+
+	measure Text_MoM_AMM = "MoM% : "&ROUND([MoM Growth - AMM],3)*100&"%"
+		lineageTag: bd857fed-57f6-4e79-af0b-6d47c4a6ed36
+
+	measure 'Emoji - AMM' = IF([MoM Growth - AMM]<0,"🔴","🟢")
+		lineageTag: e04f5a98-02e5-4f83-bc37-68155640d4cd
+
+	measure 'MoM Growth - Managed Service Value' = ```
+			
+			var mom=
+			DIVIDE([Last Month - Managed Service Value (Rs)]-[Second Last Month - Service Value (Rs)],[Second Last Month - Managed Service Value (Rs)])
+			RETURN
+			IF(mom=BLANK(),0,mom)
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 6c7a2c62-5cf8-4b20-9db6-e649b0b759ef
+
+	measure Text_MoM_Managed_service = "MoM% : "&ROUND([MoM Growth - Managed Service Value],3)*100&"%"
+		lineageTag: 9d147bcd-c149-4192-9c57-a5126c66638b
+
+	measure 'Emoji - Managed Service Value' = IF([MoM Growth - Managed Service Value]<0,"🔴","🟢")
+		lineageTag: d51bbd66-bbc2-4cb3-9226-2c1004a6ae73
+
+	measure 'MoM Growth - License Revenue' =
+			
+			var mom=DIVIDE([Last Month - License Revenue (Rs)]-[Second Last Month - License Revenue (Rs)],[Second Last Month - License Revenue (Rs)])
+			RETURN
+			IF(mom=BLANK(),0,mom)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 820168c0-d65f-46c1-80c2-7e4bc90fa6aa
+
+	measure Text_MoM_license_revenue = "MoM% : "&ROUND([MoM Growth - License Revenue],3)*100&"%"
+		lineageTag: 7278df2a-b0b3-4f9e-abb6-f2be3c7f0b81
+
+	measure 'Emoji - License Revenue' = IF([MoM Growth - License Revenue]<0,"🔴","🟢")
+		lineageTag: 803ab926-215e-4963-a8d0-5c81e377f98b
+
+	measure PM_Won_Deals = IF(MONTH(TODAY())=4,CALCULATE([Won Deals],'Calendar'[Fiscal Year] = "FY "& (MID(MAX('Calendar'[Fiscal Year]),3,3)-1)& "-"&( RIGHT(MAX('Calendar'[Fiscal Year]),2))-1,'Calendar'[Month]=MONTH(TODAY())-1),IF(MONTH(TODAY())=1,CALCULATE([Won Deals],'Calendar'[Month]=12),CALCULATE([Won Deals],'Calendar'[Month]=MONTH(TODAY())-1)))
+		formatString: 0
+		lineageTag: a6cf4216-05d5-45f6-88f7-2f6653ca9780
+
+	measure PM_title = "PM : "
+		lineageTag: c50ab53c-44b4-41a3-a9e4-30b798475a44
+
+	measure MoM_Won_Deals =
+			
+			var mom=DIVIDE([Last Month - Win Deals]-[Second Last Month - Win Deals],[Second Last Month - Win Deals])
+			RETURN
+			IF(mom=BLANK(),0,mom)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 9c9686f7-21f5-473a-abb4-511194f5c1bd
+
+	measure MoM_title = "% MoM : "
+		lineageTag: 19f848e8-f461-4b38-8737-26f551eaa0a9
+
+	measure 'Emoji - Won Deals' = IF([MoM_Won_Deals]>0,"🟢","🔴")
+		lineageTag: 1ec1dcc5-8f9f-4f7c-8202-7c56a0fea5b2
+
+	measure 'Last Month - Lost Deals' = ```
+			
+			var last=
+			IF (
+			    MONTH ( TODAY() ) = 4,
+			    CALCULATE (
+			        [Lost Deals],
+			        
+			        'Calendar'[Fiscal Year]
+			            = "FY "
+			                & ( MID ( MAX ( 'Calendar'[Fiscal Year] ), 3, 3 ) - 1 )
+			                & "-"
+			                & ( RIGHT ( MAX ( 'Calendar'[Fiscal Year] ), 2 ) - 1 ),
+			        'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			    ),
+			    IF (
+			        MONTH ( TODAY() ) = 1,
+			        CALCULATE (
+			            [Lost Deals],
+			            
+			            'Calendar'[Month] = 12
+			        ),
+			        CALCULATE (
+			            [Lost Deals],
+			            
+			            'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			        )
+			    )
+			)
+			RETURN
+			IF(last=BLANK(),0,last)
+			
+			```
+		formatString: 0
+		lineageTag: 14c2d446-d17b-4e96-9385-093e47d18460
+
+	measure 'MoM Growth - Lost Deals' =
+			
+			var mom=DIVIDE([Last Month - Lost Deals]-[Second Last Month - Lost Deals],[Second Last Month - Lost Deals])
+			RETURN
+			IF(mom=BLANK(),0,mom)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 32b5117e-e24e-43a2-ad23-1ef9a61ff624
+
+	measure 'Emoji - Lost Deals' = IF([MoM Growth - Lost Deals]<0,"🔴","🟢")
+		lineageTag: 222330ea-f832-436a-901d-4371e72237b9
+
+	measure 'Last Month - Win %' = ```
+			
+			var last=
+			IF (
+			    MONTH ( TODAY() ) = 4,
+			    CALCULATE (
+			        [Average win%],
+			        
+			        'Calendar'[Fiscal Year]
+			            = "FY "
+			                & ( MID ( MAX ( 'Calendar'[Fiscal Year] ), 3, 3 ) - 1 )
+			                & "-"
+			                & ( RIGHT ( MAX ( 'Calendar'[Fiscal Year] ), 2 ) - 1 ),
+			        'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			    ),
+			    IF (
+			        MONTH ( TODAY() ) = 1,
+			        CALCULATE (
+			            [Average win%],
+			            
+			            'Calendar'[Month] = 12
+			        ),
+			        CALCULATE (
+			            [Average win%],
+			            
+			            'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			        )
+			    )
+			)
+			RETURN
+			IF(last=BLANK(),0,last)
+			
+			```
+		formatString: 0%;-0%;0%
+		lineageTag: 84d13855-5d82-43bd-8729-edca29d7db83
+
+	measure 'MoM Growth - Win %' =
+			
+			var mom=DIVIDE([Last Month - Win %]-[Second Last Month - Win %],[Second Last Month - Win %])
+			RETURN
+			IF(mom=BLANK(),0,mom)
+		formatString: 0%;-0%;0%
+		lineageTag: d5cc187d-e2da-4902-aa6b-911e5c9c8315
+
+	measure 'Emoji - Win %' = IF([MoM Growth - Win %]<0,"🔴","🟢")
+		lineageTag: bce11192-ff64-443c-9cee-bcd2b3cc26f3
+
+	measure text_MoM_Win_Rate =
+			
+			var No_projects=[Average win%]
+			var current_month=CALCULATE([Average win%],'Calendar'[Month]=MONTH(TODAY()))
+			var previous_month=SWITCH(month(TODAY()),4,4,5,4,6,5,7,6,8,7,9,8,10,9,11,10,12,11,1,12,2,1,3,2)
+			var previous_month_projects=CALCULATE([Average win%],'Calendar'[Month]=previous_month)
+			var no_month=SWITCH(month(TODAY()),4,1,5,1,6,2,7,3,8,4,9,5,10,6,11,7,12,8,1,9,2,10,3,11)
+			var Month_projects=No_projects-current_month
+			var Average_projects=Month_projects/no_month
+			return
+			ROUND(DIVIDE((previous_month_projects-Average_projects),(Average_projects)),2)&"%"
+		lineageTag: d1319359-7ab3-4003-b5d9-0ca29b8df14c
+
+	measure 'Measure 2'
+		lineageTag: 9292f512-761c-40b6-928b-1e18a5b07e8e
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	measure 'Last Month - In Progress Deals' = ```
+			
+			var last=
+			IF (
+			    MONTH ( TODAY() ) = 4,
+			    CALCULATE (
+			        [In Progress Deals],
+			        'Calendar'[Fiscal Year]
+			            = "FY "
+			                & ( MID ( MAX ( 'Calendar'[Fiscal Year] ), 3, 3 ) - 1 )
+			                & "-"
+			                & ( RIGHT ( MAX ( 'Calendar'[Fiscal Year] ), 2 ) - 1 ),
+			        'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			    ),
+			    IF (
+			        MONTH ( TODAY() ) = 1,
+			        CALCULATE (
+			            [In Progress Deals],
+			            'Calendar'[Month] = 12
+			        ),
+			        CALCULATE (
+			            [In Progress Deals],
+			            'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			        )
+			    )
+			)
+			
+			RETURN
+			IF(last=BLANK(),0,last)
+			
+			```
+		formatString: 0
+		lineageTag: e675d614-3189-4019-901a-4f900eb22577
+
+	measure 'MoM Growth - In Progress Deals' =
+			
+			var No_projects=[In Progress Deals]
+			var current_month=CALCULATE([In Progress Deals],'Calendar'[Month]=MONTH(TODAY()))
+			var previous_month=SWITCH(month(TODAY()),4,4,5,4,6,5,7,6,8,7,9,8,10,9,11,10,12,11,1,12,2,1,3,2)
+			var previous_month_projects=CALCULATE([In Progress Deals],'Calendar'[Month]=previous_month)
+			var no_month=SWITCH(month(TODAY()),4,1,5,1,6,2,7,3,8,4,9,5,10,6,11,7,12,8,1,9,2,10,3,11)
+			var Month_projects=No_projects-current_month
+			var Average_projects=Month_projects/no_month
+			return
+			DIVIDE((previous_month_projects-Average_projects),(Average_projects))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 6052cc2e-22b4-4a19-9eb0-917b4a5496d2
+
+	measure 'Emoji - In Progress Deals' = IF([MoM Growth - In Progress Deals]<0,"🔴","🟢")
+		lineageTag: 1b8310be-40cf-46a0-ac1c-fd9e68aeed8c
+
+	measure PM_ACR_Rs = IF(MONTH(TODAY())=4,CALCULATE([Total ACR (INR)],'Calendar'[Fiscal Year] = "FY "& (MID(MAX('Calendar'[Fiscal Year]),3,3)-1)& "-"&( RIGHT(MAX('Calendar'[Fiscal Year]),2))-1,'Calendar'[Month]=MONTH(TODAY())-1),IF(MONTH(TODAY())=1,CALCULATE([Total ACR (INR)],'Calendar'[Month]=12),CALCULATE([Total ACR (INR)],'Calendar'[Month]=MONTH(TODAY())-1)))
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 4819e6bc-dcd9-4fc9-a628-aebdae82be7a
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure text_pm_acr_rs = "LM : "&"₹"&ROUND(([PM_ACR_Rs]/1000000),2)&"M"
+		lineageTag: 87490818-8355-4931-bd59-92f0c2a441c2
+
+	measure MoM_ACR_Rs =
+			
+			var No_projects=[Total ACR (INR)]
+			var current_month=CALCULATE([Total ACR (INR)],'Calendar'[Month]=MONTH(TODAY()))
+			var previous_month=SWITCH(month(TODAY()),4,4,5,4,6,5,7,6,8,7,9,8,10,9,11,10,12,11,1,12,2,1,3,2)
+			var previous_month_projects=CALCULATE([Total ACR (INR)],'Calendar'[Month]=previous_month)
+			var no_month=SWITCH(month(TODAY()),4,1,5,1,6,2,7,3,8,4,9,5,10,6,11,7,12,8,1,9,2,10,3,11)
+			var Month_projects=No_projects-current_month
+			var Average_projects=Month_projects/no_month
+			return
+			DIVIDE((previous_month_projects-Average_projects),(Average_projects))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 106416fc-9ea7-48c6-a983-f25acf149ef8
+
+	measure Text_MoM_ACR_Rs = "MoM% : "&ROUND([MoM_ACR_Rs],3)*100&"%"
+		lineageTag: af941031-0d7e-49b0-aa81-b45c713a38c0
+
+	measure 'Last Month - MRR (Rs)' = IF(MONTH(TODAY())=4,CALCULATE([MRR (INR)],'Calendar'[Fiscal Year] = "FY "& (MID(MAX('Calendar'[Fiscal Year]),3,3)-1)& "-"&( RIGHT(MAX('Calendar'[Fiscal Year]),2))-1,'Calendar'[Month]=MONTH(TODAY())-1),IF(MONTH(TODAY())=1,CALCULATE([MRR (INR)],'Calendar'[Month]=12),CALCULATE([MRR (INR)],'Calendar'[Month]=MONTH(TODAY())-1)))
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 20329ed0-7f50-47c0-a3fe-d126b041849f
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure text_pm_mrr_rs = "LM : "&"₹"&ROUND(([Last Month - MRR (Rs)]/1000000),2)&"M"
+		lineageTag: d9c51cee-7420-45b9-af69-bc6b2c64224e
+
+	measure MoM_acr_rs_Emoji = IF([MoM_ACR_Rs]<0,"🔴","🟢")
+		lineageTag: 11f7b46c-9281-4ae8-a36d-7cf9b1ea0bf9
+
+	measure MoM_MRR_rs =
+			
+			var No_projects=[MRR (INR)]
+			var current_month=CALCULATE([MRR (INR)],'Calendar'[Month]=MONTH(TODAY()))
+			var previous_month=SWITCH(month(TODAY()),4,4,5,4,6,5,7,6,8,7,9,8,10,9,11,10,12,11,1,12,2,1,3,2)
+			var previous_month_projects=CALCULATE([MRR (INR)],'Calendar'[Month]=previous_month)
+			var no_month=SWITCH(month(TODAY()),4,1,5,1,6,2,7,3,8,4,9,5,10,6,11,7,12,8,1,9,2,10,3,11)
+			var Month_projects=No_projects-current_month
+			var Average_projects=Month_projects/no_month
+			return
+			DIVIDE((previous_month_projects-Average_projects),(Average_projects))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 7f19b253-51b1-40d4-a2b4-4b2a15c82120
+
+	measure Text_MoM_MRR_rs = "MoM% : "&ROUND([MoM_MRR_rs],3)*100&"%"
+		lineageTag: 6adcd8d9-daa0-4b54-9b67-833ecedd8244
+
+	measure MoM_MRR_rs_Emoji = IF([MoM_MRR_rs]<0,"🔴","🟢")
+		lineageTag: 6056b478-b231-4f99-82a0-9478d04a1da8
+
+	measure 'Measure 3'
+		lineageTag: 4022d150-31aa-4d7f-b05b-d49064a8b15f
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	measure 'Last Month - Service Value (Rs)' = ```
+			
+			var last=
+			IF (
+			    MONTH ( TODAY() ) = 4,
+			    CALCULATE (
+			        [Service Value],
+			        
+			        'Calendar'[Fiscal Year]
+			            = "FY "
+			                & ( MID ( MAX ( 'Calendar'[Fiscal Year] ), 3, 3 ) - 1 )
+			                & "-"
+			                & ( RIGHT ( MAX ( 'Calendar'[Fiscal Year] ), 2 ) - 1 ),
+			        'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			    ),
+			    IF (
+			        MONTH ( TODAY() ) = 1,
+			        CALCULATE (
+			            [Service Value],
+			            
+			            'Calendar'[Month] = 12
+			        ),
+			        CALCULATE (
+			            [Service Value],
+			            
+			            'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			        )
+			    )
+			
+			)
+			RETURN
+			IF(last=BLANK(),0,last)
+			
+			```
+		formatString: "₹"#,0.00;-"₹"#,0.00;"₹"#,0.00
+		lineageTag: 43be8cb8-9b15-4388-a46d-f76d448289ea
+
+		annotation PBI_FormatHint = {"currencyCulture":"hi-Latn-IN"}
+
+	measure MoM_Service_Value_Rs =
+			
+			var per=DIVIDE([Last Month - Service Value (Rs)]-[Second Last Month - Service Value (Rs)],[Second Last Month - Service Value (Rs)])
+			RETURN
+			IF(per=BLANK(),0,per)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: a147f429-e0be-403d-a098-873f16edb71e
+
+	measure Text_MoM_Service_value_Rs = "MoM% : "&ROUND([MoM_Service_Value_Rs],3)*100&"%"
+		lineageTag: 3aed0369-d073-49f6-94a8-1ea1756f14e1
+
+	measure MoM_service_value_Rs_Emoji = IF([MoM_Service_Value_Rs]<0,"🔴","🟢")
+		lineageTag: 33a6e30a-0560-4dcb-bb83-4213ee6318cc
+
+	measure 'Last Month - Managed Service Value (Rs)' = ```
+			
+			var last=
+			IF (
+			    MONTH ( TODAY() ) = 4,
+			    CALCULATE (
+			        [Managed Service Value (Rs)],
+			        
+			        'Calendar'[Fiscal Year]
+			            = "FY "
+			                & ( MID ( MAX ( 'Calendar'[Fiscal Year] ), 3, 3 ) - 1 )
+			                & "-"
+			                & ( RIGHT ( MAX ( 'Calendar'[Fiscal Year] ), 2 ) - 1 ),
+			        'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			    ),
+			    IF (
+			        MONTH ( TODAY() ) = 1,
+			        CALCULATE (
+			            [Managed Service Value (Rs)],
+			            
+			            'Calendar'[Month] = 12
+			        ),
+			        CALCULATE (
+			            [Managed Service Value (Rs)],
+			            
+			            'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			        )
+			    )
+			)
+			RETURN
+			IF(last=BLANK(),0,last)
+			
+			```
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 1bc4d643-71c4-415e-9324-5f355f180d75
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure text_pm_managed_service_Rs = "LM : "&"₹"&if(ROUND(([Last Month - Managed Service Value (Rs)]/1000),2),BLANK(),0)&"K"
+		lineageTag: b9940d64-e12c-44a7-aa58-4a1571ddb9e0
+
+	measure MoM_Managed_service_Rs =
+			
+			var No_projects=[Managed Service Value (Rs)]
+			var current_month=CALCULATE([Managed Service Value (Rs)],'Calendar'[Month]=MONTH(TODAY()))
+			var previous_month=SWITCH(month(TODAY()),4,4,5,4,6,5,7,6,8,7,9,8,10,9,11,10,12,11,1,12,2,1,3,2)
+			var previous_month_projects=CALCULATE([Managed Service Value (Rs)],'Calendar'[Month]=previous_month)
+			var no_month=SWITCH(month(TODAY()),4,1,5,1,6,2,7,3,8,4,9,5,10,6,11,7,12,8,1,9,2,10,3,11)
+			var Month_projects=No_projects-current_month
+			var Average_projects=Month_projects/no_month
+			return
+			DIVIDE((previous_month_projects-Average_projects),(Average_projects))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 3905250c-e861-4a35-b5bb-8707c0cb4dcc
+
+	measure Text_MoM_Managed_service_Rs = "MoM% : "&ROUND([MoM_Managed_service_Rs],3)*100&"%"
+		lineageTag: b9d5b0c0-b2f5-4df2-ad08-c141e5ab4bc3
+
+	measure PM_license_revenue_Rs = IF(MONTH(TODAY())=4,CALCULATE([Annual License Revenue],'Calendar'[Fiscal Year] = "FY "& (MID(MAX('Calendar'[Fiscal Year]),3,3)-1)& "-"&( RIGHT(MAX('Calendar'[Fiscal Year]),2))-1,'Calendar'[Month]=MONTH(TODAY())-1),IF(MONTH(TODAY())=1,CALCULATE([Annual License Revenue],'Calendar'[Month]=12),CALCULATE([Annual License Revenue],'Calendar'[Month]=MONTH(TODAY())-1)))
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 387d29db-f60b-4309-bc47-c2f2c7a305bf
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure text_pm_license_revenue_Rs = "LM : "&"₹"&IF(ROUND(([PM_license_revenue_Rs]/1000000),2)=BLANK(),0,ROUND(([PM_license_revenue_Rs]/1000000),2))&"M"
+		lineageTag: 542e2a15-df09-4451-8f3d-5cc078db8885
+
+	measure MoM_license_revenue_Rs =
+			
+			var No_projects=[Annual License Revenue]
+			var current_month=CALCULATE([Annual License Revenue],'Calendar'[Month]=MONTH(TODAY()))
+			var previous_month=SWITCH(month(TODAY()),4,4,5,4,6,5,7,6,8,7,9,8,10,9,11,10,12,11,1,12,2,1,3,2)
+			var previous_month_projects=CALCULATE([Annual License Revenue],'Calendar'[Month]=previous_month)
+			var no_month=SWITCH(month(TODAY()),4,1,5,1,6,2,7,3,8,4,9,5,10,6,11,7,12,8,1,9,2,10,3,11)
+			var Month_projects=No_projects-current_month
+			var Average_projects=Month_projects/no_month
+			return
+			DIVIDE((previous_month_projects-Average_projects),(Average_projects))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c123df47-9088-4c23-850f-b7da43390779
+
+	measure Text_MoM_license_revenue_Rs = "MoM% : "&ROUND([MoM_license_revenue_Rs],3)*100&"%"
+		lineageTag: e15ce714-60d5-4b84-ac4f-6bdec83a639a
+
+	measure MoM_license_revenue_Rs_Emoji = IF([MoM_license_revenue_Rs]<0,"🔴","🟢")
+		lineageTag: 75e4fd2b-4ab9-45fd-bc93-371d2a6278d0
+
+	measure MoM_Managed_service_Rs_Emoji = IF([MoM_Managed_service_Rs]<0,"🔴","🟢")
+		lineageTag: 086684e7-6ba2-4d38-830b-5eb32b15dda7
+
+	measure 'Measure 4' = CALCULATE([Total AMM (USD)],'PreSales Tracker'[Deal Status]="Deal Won")
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 1d82cd1e-4ba5-4086-a1eb-49559a473da7
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure OTC(Rs) = CALCULATE(sum('PreSales Tracker'[OTC (₹)]))
+		formatString: "₹"\ #,0.00;#,0.00\ -"₹";"₹"\ #,0.00
+		lineageTag: a7fa3c08-af6e-427a-b9e9-e5037bd142ae
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Last Month - OTC (Rs)' = ```
+			
+			var last=
+			IF (
+			    MONTH ( TODAY() ) = 4,
+			    CALCULATE (
+			        [OTC(Rs)],
+			        
+			        'Calendar'[Fiscal Year]
+			            = "FY "
+			                & ( MID ( MAX ( 'Calendar'[Fiscal Year] ), 3, 3 ) - 1 )
+			                & "-"
+			                & ( RIGHT ( MAX ( 'Calendar'[Fiscal Year] ), 2 ) - 1 ),
+			        'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			    ),
+			    IF (
+			        MONTH ( TODAY() ) = 1,
+			        CALCULATE (
+			            [OTC(Rs)],
+			            
+			            'Calendar'[Month] = 12
+			        ),
+			        CALCULATE (
+			            [OTC(Rs)],
+			            
+			            'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			        )
+			    )
+			)
+			RETURN
+			IF(last=BLANK(),0,last)
+			
+			```
+		formatString: "₹"\ #,0.00;#,0.00\ -"₹";"₹"\ #,0.00
+		lineageTag: 60f413bd-3fc7-44cc-89e7-d37f24c353c5
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure text_pm_otc_Rs = "LM : "&"₹"&if(ROUND(([Last Month - OTC (Rs)]/1000),2)=BLANK(),0,ROUND(([Last Month - OTC (Rs)]/1000),2))&"K"
+		lineageTag: 9afc8e03-2ed4-44fa-933e-7ccd29c21e68
+
+	measure MoM_otc_Rs =
+			
+			var mom=DIVIDE([Last Month - OTC (Rs)]-[Second Last Month - Service Value (Rs)],[Second Last Month - OTC (Rs)])
+			RETURN
+			IF(mom=BLANK(),0,mom)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: e9224f13-9e0e-43b1-b0b5-90287eb852b2
+
+	measure Text_MoM_otc_Rs = "MoM% : "&ROUND([MoM_otc_Rs],3)*100&"%"
+		lineageTag: 5debd454-28d1-4d73-9c11-428bf1f7338e
+
+	measure 'Emoji - OTC (Rs)' = IF([MoM_otc_Rs]<0,"🔴","🟢")
+		lineageTag: aad40376-ad61-4104-bac8-c4c06f065955
+
+	measure 'Active Opportunities' =
+			
+			var active=CALCULATE([Total Projects],not('PreSales Tracker'[Deal Status] in {"Deal Won","Lost","Dropped"}))
+			RETURN
+			IF(active=BLANK(),0,active)
+		formatString: 0
+		lineageTag: 57e77608-78f6-4f85-87c8-10979663a4ff
+
+	measure 'Pipeline Revenue' =
+			
+			var revenue=
+			CALCULATE (
+			          [OTC(Rs)]
+			        + [Managed Service Value (Rs)]
+			        + [Annual License Revenue],
+			    NOT ( 'PreSales Tracker'[Deal Status] IN { "Deal Won","Lost","Dropped" } )
+			)
+			RETURN
+			IF(revenue=blank(),0,revenue)
+		formatString: "₹"\ #,0.00;#,0.00\ -"₹";"₹"\ #,0.00
+		lineageTag: 5ea79256-a909-4632-a68f-900e175c70cc
+
+		annotation PBI_FormatHint = {"currencyCulture":"as-IN"}
+
+	measure 'Weighted Pipeline Revenue' = [Pipeline Revenue]*[Average win%]
+		formatString: "₹"\ #,0.00;#,0.00\ -"₹";"₹"\ #,0.00
+		lineageTag: 875d630a-2ff8-4c0f-ade4-7269283951bb
+
+		annotation PBI_FormatHint = {"currencyCulture":"as-IN"}
+
+	measure 'Hot Deals' = CALCULATE([Total Projects],'PreSales Tracker'[Deal Status]="Hot Lead")
+		formatString: 0
+		lineageTag: 487f0d4c-2a3e-4c16-b6c4-1af5e71d522e
+
+	measure 'Revenue Deal won' = CALCULATE([Actual Revenue],'PreSales Tracker'[Deal Status]="")
+		lineageTag: f6f5aa81-a21b-45b2-85e8-c64990475f24
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Deal Won Acr' = CALCULATE([Total ACR (INR)],'PreSales Tracker'[Deal Status]="Lost")
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 25a93108-2271-4263-b47c-091fd1da0974
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Hot Deals Revenue' = CALCULATE([Actual Revenue],'PreSales Tracker'[Deal Status]="Hot Lead")
+		lineageTag: 01fbb182-e40c-44e8-a21c-f0c287128327
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Slipping Deals' = CALCULATE([Active Opportunities],'PreSales Tracker'[Closure Date]>TODAY())
+		formatString: 0
+		lineageTag: dd11fa0a-85d9-4292-934b-fd9ced29d622
+
+	measure 'SL No' = ```
+			
+			VAR CurrentWonDeals =
+			    [Won Deals] 
+			
+			RETURN
+			RANKX (
+			    SUMMARIZE (
+			        ALLSELECTED ( 'PreSales Tracker' ),
+			        'PreSales Tracker'[Presales SPOC.title],
+			        'PreSales Tracker'[Stream (Short)],
+			        "WonDeals", [Won Deals] 
+			    ),
+			    [WonDeals],
+			    CurrentWonDeals,
+			    DESC,
+			    Dense
+			)
+			
+			```
+		formatString: 0
+		lineageTag: a9b53346-dca0-43a1-90f8-e27e4d8b64cd
+
+	measure tot = [OTC(Rs)]+[Managed Service Value (Rs)]+[Annual License Revenue]
+		lineageTag: 0c10daba-d1dd-4f9b-bb0b-cc19fa477748
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Measure 5' = CALCULATE([tot],'PreSales Tracker'[Deal Status]="Deal Won")
+		lineageTag: cd3ca193-d36d-4a74-9a5d-f9955164c867
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Last Month - Win Deals' = ```
+			
+			var last=
+			IF (
+			    MONTH ( TODAY() ) = 4,
+			    CALCULATE (
+			        [Won Deals],
+			        
+			        'Calendar'[Fiscal Year]
+			            = "FY "
+			                & ( MID ( MAX ( 'Calendar'[Fiscal Year] ), 3, 3 ) - 1 )
+			                & "-"
+			                & ( RIGHT ( MAX ( 'Calendar'[Fiscal Year] ), 2 ) - 1 ),
+			        'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			    ),
+			    IF (
+			        MONTH ( TODAY() ) = 1,
+			        CALCULATE (
+			            [Won Deals],
+			            
+			            'Calendar'[Month] = 12
+			        ),
+			        CALCULATE (
+			            [Won Deals],
+			            
+			            'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			        )
+			    )
+			)
+			RETURN
+			IF(last=BLANK(),0,last)
+			
+			```
+		lineageTag: 6d8548f4-2f33-40ee-b7cb-dbcece608ffe
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Last Month - License Revenue (Rs)' = ```
+			
+			var last=
+			IF (
+			    MONTH ( TODAY() ) = 4,
+			    CALCULATE (
+			        [Annual License Revenue],
+			        
+			        'Calendar'[Fiscal Year]
+			            = "FY "
+			                & ( MID ( MAX ( 'Calendar'[Fiscal Year] ), 3, 3 ) - 1 )
+			                & "-"
+			                & ( RIGHT ( MAX ( 'Calendar'[Fiscal Year] ), 2 ) - 1 ),
+			        'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			    ),
+			    IF (
+			        MONTH ( TODAY() ) = 1,
+			        CALCULATE ([Annual License Revenue],
+			            
+			            'Calendar'[Month] = 12
+			        ),
+			        CALCULATE (
+			            [Annual License Revenue],
+			            
+			            'Calendar'[Month] = MONTH ( TODAY() ) - 1
+			        )
+			    )
+			)
+			RETURN
+			IF(last=BLANK(),0,last)
+			
+			```
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: be1379f6-6cac-4a42-97a9-59d2c2aed832
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Second Last Month - ACR' = ```
+			
+			VAR CurrMonth = MONTH ( TODAY() )
+			VAR CurrYear  = YEAR ( TODAY() )
+			
+			VAR TwoMonthsBackMonth =
+			    SWITCH (
+			        CurrMonth,
+			        1, 11,
+			        2, 12,
+			        CurrMonth - 2
+			    )
+			
+			VAR TwoMonthsBackYear =
+			    SWITCH (
+			        CurrMonth,
+			        1, CurrYear - 1,
+			        2, CurrYear - 1,
+			        CurrYear
+			    )
+			
+			RETURN
+			CALCULATE (
+			    [Total ACR (USD)],
+			    
+			    'Calendar'[Month] = TwoMonthsBackMonth,
+			    'Calendar'[Year]  = TwoMonthsBackYear
+			)
+			
+			
+			```
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 5f009c64-439d-4823-a4a7-2a96780e7e08
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Second Last Month - MRR ($)' = ```
+			
+			VAR CurrMonth = MONTH ( TODAY() )
+			VAR CurrYear  = YEAR ( TODAY() )
+			
+			VAR TwoMonthsBackMonth =
+			    SWITCH (
+			        CurrMonth,
+			        1, 11,
+			        2, 12,
+			        CurrMonth - 2
+			    )
+			
+			VAR TwoMonthsBackYear =
+			    SWITCH (
+			        CurrMonth,
+			        1, CurrYear - 1,
+			        2, CurrYear - 1,
+			        CurrYear
+			    )
+			
+			RETURN
+			CALCULATE (
+			    [Total MRR],
+			    
+			    'Calendar'[Month] = TwoMonthsBackMonth,
+			    'Calendar'[Year]  = TwoMonthsBackYear
+			)
+			
+			```
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 9eb9d04e-6c84-4d70-8f3e-ba619cd6951a
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Second Last Month - AMM ($)' = ```
+			
+			VAR CurrMonth = MONTH ( TODAY() )
+			VAR CurrYear  = YEAR ( TODAY() )
+			
+			VAR TwoMonthsBackMonth =
+			    SWITCH (
+			        CurrMonth,
+			        1, 11,
+			        2, 12,
+			        CurrMonth - 2
+			    )
+			
+			VAR TwoMonthsBackYear =
+			    SWITCH (
+			        CurrMonth,
+			        1, CurrYear - 1,
+			        2, CurrYear - 1,
+			        CurrYear
+			    )
+			
+			RETURN
+			CALCULATE (
+			    [Total AMM (USD)],
+			    
+			    'Calendar'[Month] = TwoMonthsBackMonth,
+			    'Calendar'[Year]  = TwoMonthsBackYear
+			)
+			
+			```
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: c87fcd5b-89d9-44c9-bd71-7268f8ac4a06
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Second Last Month - Service Value (Rs)' = ```
+			
+			VAR CurrMonth = MONTH ( TODAY() )
+			VAR CurrYear  = YEAR ( TODAY() )
+			
+			VAR TwoMonthsBackMonth =
+			    SWITCH (
+			        CurrMonth,
+			        1, 11,
+			        2, 12,
+			        CurrMonth - 2
+			    )
+			
+			VAR TwoMonthsBackYear =
+			    SWITCH (
+			        CurrMonth,
+			        1, CurrYear - 1,
+			        2, CurrYear - 1,
+			        CurrYear
+			    )
+			
+			RETURN
+			CALCULATE (
+			    [Service Value],
+			    
+			    'Calendar'[Month] = TwoMonthsBackMonth,
+			    'Calendar'[Year]  = TwoMonthsBackYear
+			)
+			
+			```
+		lineageTag: 83654906-22d8-4afd-ad50-99fe497b8849
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Second Last Month - Managed Service Value (Rs)' = ```
+			
+			VAR CurrMonth = MONTH ( TODAY() )
+			VAR CurrYear  = YEAR ( TODAY() )
+			
+			VAR TwoMonthsBackMonth =
+			    SWITCH (
+			        CurrMonth,
+			        1, 11,
+			        2, 12,
+			        CurrMonth - 2
+			    )
+			
+			VAR TwoMonthsBackYear =
+			    SWITCH (
+			        CurrMonth,
+			        1, CurrYear - 1,
+			        2, CurrYear - 1,
+			        CurrYear
+			    )
+			
+			RETURN
+			CALCULATE (
+			    [Managed Service Value (Rs)],
+			    
+			    'Calendar'[Month] = TwoMonthsBackMonth,
+			    'Calendar'[Year]  = TwoMonthsBackYear
+			)
+			
+			```
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 30b772df-36e5-4eef-aded-399fc119963d
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Second Last Month - License Revenue (Rs)' = ```
+			
+			VAR CurrMonth = MONTH ( TODAY() )
+			VAR CurrYear  = YEAR ( TODAY() )
+			
+			VAR TwoMonthsBackMonth =
+			    SWITCH (
+			        CurrMonth,
+			        1, 11,
+			        2, 12,
+			        CurrMonth - 2
+			    )
+			
+			VAR TwoMonthsBackYear =
+			    SWITCH (
+			        CurrMonth,
+			        1, CurrYear - 1,
+			        2, CurrYear - 1,
+			        CurrYear
+			    )
+			
+			RETURN
+			CALCULATE (
+			    [Annual License Revenue],
+			    
+			    'Calendar'[Month] = TwoMonthsBackMonth,
+			    'Calendar'[Year]  = TwoMonthsBackYear
+			)
+			
+			```
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 769e8bb2-b563-44de-ad23-a4c7d2dcd4fc
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Second Last Month - OTC (Rs)' = ```
+			
+			VAR CurrMonth = MONTH ( TODAY() )
+			VAR CurrYear  = YEAR ( TODAY() )
+			
+			VAR TwoMonthsBackMonth =
+			    SWITCH (
+			        CurrMonth,
+			        1, 11,
+			        2, 12,
+			        CurrMonth - 2
+			    )
+			
+			VAR TwoMonthsBackYear =
+			    SWITCH (
+			        CurrMonth,
+			        1, CurrYear - 1,
+			        2, CurrYear - 1,
+			        CurrYear
+			    )
+			
+			RETURN
+			CALCULATE (
+			    [OTC(Rs)],
+			    
+			    'Calendar'[Month] = TwoMonthsBackMonth,
+			    'Calendar'[Year]  = TwoMonthsBackYear
+			)
+			
+			```
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 0a270243-456d-471a-9a88-f62fad82a61e
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Second Last Month - Win %' = ```
+			
+			VAR CurrMonth = MONTH ( TODAY() )
+			VAR CurrYear  = YEAR ( TODAY() )
+			
+			VAR TwoMonthsBackMonth =
+			    SWITCH (
+			        CurrMonth,
+			        1, 11,
+			        2, 12,
+			        CurrMonth - 2
+			    )
+			
+			VAR TwoMonthsBackYear =
+			    SWITCH (
+			        CurrMonth,
+			        1, CurrYear - 1,
+			        2, CurrYear - 1,
+			        CurrYear
+			    )
+			
+			RETURN
+			CALCULATE (
+			    [Average win%],
+			    
+			    'Calendar'[Month] = TwoMonthsBackMonth,
+			    'Calendar'[Year]  = TwoMonthsBackYear
+			)
+			
+			```
+		lineageTag: 1966f2d6-436b-4ff5-b36a-91ec9f66ab22
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Second Last Month - Win Deals' = ```
+			
+			VAR CurrMonth = MONTH ( TODAY() )
+			VAR CurrYear  = YEAR ( TODAY() )
+			
+			VAR TwoMonthsBackMonth =
+			    SWITCH (
+			        CurrMonth,
+			        1, 11,
+			        2, 12,
+			        CurrMonth - 2
+			    )
+			
+			VAR TwoMonthsBackYear =
+			    SWITCH (
+			        CurrMonth,
+			        1, CurrYear - 1,
+			        2, CurrYear - 1,
+			        CurrYear
+			    )
+			
+			RETURN
+			CALCULATE (
+			    [Won Deals],
+			    
+			    'Calendar'[Month] = TwoMonthsBackMonth,
+			    'Calendar'[Year]  = TwoMonthsBackYear
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 717ff533-e2b7-42a6-b57c-bd420a4cfd3d
+
+	measure 'Second Last Month - Lost Deals' = ```
+			
+			VAR CurrMonth = MONTH ( TODAY() )
+			VAR CurrYear  = YEAR ( TODAY() )
+			
+			VAR TwoMonthsBackMonth =
+			    SWITCH (
+			        CurrMonth,
+			        1, 11,
+			        2, 12,
+			        CurrMonth - 2
+			    )
+			
+			VAR TwoMonthsBackYear =
+			    SWITCH (
+			        CurrMonth,
+			        1, CurrYear - 1,
+			        2, CurrYear - 1,
+			        CurrYear
+			    )
+			
+			RETURN
+			CALCULATE (
+			    [Lost Deals],
+			    
+			    'Calendar'[Month] = TwoMonthsBackMonth,
+			    'Calendar'[Year]  = TwoMonthsBackYear
+			)
+			
+			```
+		formatString: 0
+		lineageTag: f087ffa7-119c-4470-b4e6-600193cb7057
+
+	measure 'Second Last Month - In Progress Deals' = ```
+			
+			VAR CurrMonth = MONTH ( TODAY() )
+			VAR CurrYear  = YEAR ( TODAY() )
+			
+			VAR TwoMonthsBackMonth =
+			    SWITCH (
+			        CurrMonth,
+			        1, 11,
+			        2, 12,
+			        CurrMonth - 2
+			    )
+			
+			VAR TwoMonthsBackYear =
+			    SWITCH (
+			        CurrMonth,
+			        1, CurrYear - 1,
+			        2, CurrYear - 1,
+			        CurrYear
+			    )
+			
+			RETURN
+			CALCULATE (
+			    [In Progress Deals],
+			    'Calendar'[Month] = TwoMonthsBackMonth,
+			    'Calendar'[Year]  = TwoMonthsBackYear
+			)
+			
+			```
+		formatString: 0
+		lineageTag: b0257e58-f8e5-44dc-bb21-fe2e880eaa33
+
+	measure pop-up = IF([Actual Revenue]=BLANK(),"No Data to Display","")
+		lineageTag: 984d6d0e-c8ae-4a5f-bcbe-c6701ffba279
+
+	measure 'Measure 6'
+		lineageTag: 4a7c6472-b5d4-40cf-9668-c129989c5d96
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	measure 'last refresh' = ```
+			FORMAT(MAXX({max('PreSales Tracker'[Presales Refresh])},[Value]),
+			    "dd mmm, h:mm AM/PM"
+			)
+			
+			```
+		lineageTag: 9c8013a7-572d-4883-8366-d51629cec3fc
+
+	measure getdate = NOW()
+		formatString: General Date
+		lineageTag: 91ba0629-87c3-4d8d-9798-4460ad4960c5
+
+	measure 'Last Month Opportunities'
+		lineageTag: 41d622cd-1c9f-43ac-b602-427a728c6ee4
+
+	partition 'Key Measures' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

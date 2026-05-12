@@ -1,0 +1,31 @@
+table AI/ML
+	lineageTag: c7114f6d-7f72-48b5-9725-f7bc05b0e4d3
+
+	measure 'Total Oppts AI/ML' = CALCULATE([Total Projects],'PreSales Tracker'[Stream (Short)]="Data & AI")
+		formatString: 0
+		lineageTag: 8d6d5f50-2ae0-4ce7-9acb-b82ecb440bd3
+
+	measure 'In progress AI/ML' = CALCULATE([In Progress Deals],'PreSales Tracker'[Stream (Short)]="Data & AI")
+		formatString: 0
+		lineageTag: 7268f32f-6e21-4f4f-bfd0-ef784f2ce936
+
+	measure 'Won Deals AI/ML' = CALCULATE([Won Deals],'PreSales Tracker'[Stream (Short)]="Data & AI")
+		formatString: 0
+		lineageTag: 9aa2abd9-0296-46a3-bbf7-9b54758eecbb
+
+	measure 'Lost Deals AI/ML' = CALCULATE([Lost Deals],'PreSales Tracker'[Stream (Short)]="Data & AI")
+		formatString: 0
+		lineageTag: 7d64ab98-0bff-4656-9737-14b35ab9ede0
+
+	partition AI/ML = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

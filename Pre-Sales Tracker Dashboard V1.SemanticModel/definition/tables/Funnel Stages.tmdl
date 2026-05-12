@@ -1,0 +1,42 @@
+table 'Funnel Stages'
+	lineageTag: 06d634f9-2230-4747-9fd1-7a6f7ca9b100
+
+	column Stage
+		lineageTag: c045189b-d8cb-485b-a8f0-816403647dd2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Stage]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Stage Rank'
+		formatString: 0
+		lineageTag: 447a520e-34fa-4026-97b3-6d8c49b9e937
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Stage Rank]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Funnel Stages' = calculated
+		mode: import
+		source = ```
+				
+				DATATABLE(
+				    "Stage", STRING,
+				    "Stage Rank", INTEGER,
+				    {
+				        {"Cold", 1},
+				        {"Warm", 2},
+				        {"Hot", 3},
+				        {"In Progress", 4},
+				        
+				        {"Deal Won", 6}
+				        
+				    }
+				)
+				
+				```
+
+	annotation PBI_Id = 0db3d97d17ec406db5d36658715666b5
+

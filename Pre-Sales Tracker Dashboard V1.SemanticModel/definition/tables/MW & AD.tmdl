@@ -1,0 +1,31 @@
+table 'MW & AD'
+	lineageTag: c20a589e-f2f0-4dcf-81a9-a2b58646ee9c
+
+	measure 'Total Oppts MW&AD' = CALCULATE([Total Projects],'PreSales Tracker'[Stream (Short)]="MWP")
+		formatString: 0
+		lineageTag: 73724286-5f7a-4dd0-8a0d-3820c9fad0e5
+
+	measure 'In Progress MW & AD' = CALCULATE([In Progress Deals],'PreSales Tracker'[Stream (Short)]="MWP")
+		formatString: 0
+		lineageTag: ead52a7a-2734-4bb1-840f-e08bb25ce4e1
+
+	measure 'Won Deals MW & AD' = CALCULATE([Won Deals],'PreSales Tracker'[Stream (Short)]="MWP")
+		formatString: 0
+		lineageTag: 10bca0bb-2675-46bd-9c1d-c94b3bdbcf6d
+
+	measure 'Lost Deals MW & AD' = CALCULATE([Lost Deals],'PreSales Tracker'[Stream (Short)]="MWP")
+		formatString: 0
+		lineageTag: 2de640b8-13cd-4eca-85e6-9aac7db87514
+
+	partition 'MW & AD' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

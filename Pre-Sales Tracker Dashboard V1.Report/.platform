@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Pre-Sales Tracker Dashboard V1"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "8ecfc4a8-aa77-8b62-4022-a0cc52ce45d1"
+  }
+}

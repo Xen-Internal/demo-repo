@@ -1,0 +1,25 @@
+name: Auto PR Dev → prod
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  create-pr-to-main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Create PR from dev to prod
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: dev
+          destination_branch: prod
+          pr_title: "Promote dev → prod"
+          pr_body: |
+            Automated PR from **dev** to **prod**.
+            Please review and approve to promote to prod workspace.
+          github_token: ${{ github.token }}

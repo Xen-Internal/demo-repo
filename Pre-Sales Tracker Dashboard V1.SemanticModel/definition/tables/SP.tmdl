@@ -1,0 +1,34 @@
+table SP
+	lineageTag: e9e38dd9-df52-4a94-9eb5-97a3d59e189d
+
+	measure 'Total Oppts SP' = CALCULATE([Total Projects],'PreSales Tracker'[Stream (Short)]="Security")
+		formatString: 0
+		lineageTag: ef9024ca-02d9-4d82-8754-8158399b55b9
+
+	measure 'In progress SP' = CALCULATE([In Progress Deals],'PreSales Tracker'[Stream (Short)]="Security")
+		formatString: 0
+		lineageTag: f90eff1c-7da2-49f4-90dd-983d98ea7bc9
+
+	measure 'Measure 8'
+		lineageTag: 16433acf-4eca-4be1-9c9a-47dad98e6857
+
+	measure 'Won Deals SP' = CALCULATE([Won Deals],'PreSales Tracker'[Stream (Short)]="Security")
+		formatString: 0
+		lineageTag: b464d3b9-ee36-4f71-8efc-ec571197b9b8
+
+	measure 'Lost Deals SP' = CALCULATE([Lost Deals],'PreSales Tracker'[Stream (Short)]="Security")
+		formatString: 0
+		lineageTag: bf20aaac-ebce-4343-967a-fd1e8e03e2eb
+
+	partition SP = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+
