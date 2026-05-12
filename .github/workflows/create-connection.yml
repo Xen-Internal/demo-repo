@@ -2,6 +2,11 @@ name: Create Git Connection to Workspace
 
 on:
     workflow_dispatch:
+      inputs:
+        workspace_name:
+            description: Fabric workspace name
+            required: true
+            type: string
 
 jobs:
   create-git-connection:
@@ -24,12 +29,12 @@ jobs:
           SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-          WORKSPACE_NAME: ${{ secrets.FABRIC_PROD_WORKSPACE_NAME }}
+          WORKSPACE_NAME: ${{ inputs.workspace_name }}
           CONN_NAME: ${{ secrets.FABRIC_GIT_CONN_NAME }}
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
         run: |
-          pwsh -File ./scripts/CreateConnection.ps1 `
+          pwsh -File ./scripts/Create-Git-Connection.ps1 `
             -workspaceName $env:WORKSPACE_NAME `
             -principalType "ServicePrincipal" `
             -tenantId $env:TENANT_ID `
@@ -37,4 +42,4 @@ jobs:
             -clientId $env:CLIENT_ID `
             -servicePrincipalSecret $env:CLIENT_SECRET `
             -key $env:PAT_TOKEN `
-            -displayName $env:CONN_NAME
+            -displayName "demo-fabric-Git-Connector"
