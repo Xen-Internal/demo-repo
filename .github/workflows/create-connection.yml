@@ -1,7 +1,7 @@
 name: Create Git Connection Workspace
 
 on:
-  workflow_dispatch:
+    workflow_dispatch:
 
 jobs:
   update-fabric:
@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
+      
       - name: Install Az PowerShell module
         shell: pwsh
         run: |
@@ -24,10 +24,9 @@ jobs:
           SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          PAT_TOKEN: ${{ secrets.GITHUB_PAT }}
         run: |
-          ./scripts/CreateConnection.ps1 `
-            -workspaceName "DemoWS_Prod" `
+          pwsh -File ./scripts/CreateConnection.ps1 `
+            -workspaceName "Fabric-Prod" `
             -principalType "ServicePrincipal" `
             -tenantId $env:TENANT_ID `
             -subscriptionId $env:SUBSCRIPTION_ID `
