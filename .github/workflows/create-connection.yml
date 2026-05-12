@@ -1,37 +1,39 @@
-name: Create Git Connection Workspace
+name: Create Git Connection to Workspace
 
 on:
     workflow_dispatch:
 
 jobs:
-  update-fabric:
+  create-git-connection:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
       
-      - name: Install Az PowerShell module
+      - name: Install Az PowerShell Module
         shell: pwsh
         run: |
           Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
           Install-Module -Name Az -Repository PSGallery -Force -AllowClobber
 
-      - name: Run Fabric update script
+      - name: Establish Connection to the Workspace
         shell: pwsh
         env:
           TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          WORKSPACE_NAME: ${{ secrets.FABRIC_PROD_WORKSPACE_NAME }}
+          CONN_NAME: ${{ secrets.FABRIC_GIT_CONN_NAME }}
+
         run: |
-          pwsh -File ./scripts/CreateConnection.ps1 `
-            -workspaceName "Fabric-Prod" `
+          pwsh -File ./scripts/Create-Git-Connection.ps1 `
+            -workspaceName $env:WORKSPACE_NAME `
             -principalType "ServicePrincipal" `
             -tenantId $env:TENANT_ID `
             -subscriptionId $env:SUBSCRIPTION_ID `
             -clientId $env:CLIENT_ID `
             -servicePrincipalSecret $env:CLIENT_SECRET `
             -key $env:PAT_TOKEN `
-            -displayName "demo-fabric-GitConnection"
+            -displayName $env:CONN_NAME
