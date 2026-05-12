@@ -1,7 +1,7 @@
 name: Create Git Connection Workspace
 
 on:
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   update-fabric:
