@@ -29,7 +29,7 @@ param (
 # Connection with personal access token for GitHubSourceControl
 $gitHubPATConnection = @{
     connectivityType = "ShareableCloud"
-    displayName = "GH-Connection-01"
+    displayName = $displayName
     connectionDetails = @{
         type = "GitHubSourceControl"
         creationMethod = "GitHubSourceControl.Contents"
