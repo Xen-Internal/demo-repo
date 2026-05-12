@@ -32,8 +32,11 @@ jobs:
           WORKSPACE_NAME: ${{ inputs.workspace_name }}
           CONN_NAME: ${{ secrets.FABRIC_GIT_CONN_NAME }}
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-
+        
         run: |
+         $dateString = Get-Date -Format "yyyyMMddHHmmss"
+         $displayName = "demo-fabric-Git-Connector-$dateString"
+        
           pwsh -File ./scripts/CreateConnection.ps1 `
             -workspaceName $env:WORKSPACE_NAME `
             -principalType "ServicePrincipal" `
@@ -42,4 +45,4 @@ jobs:
             -clientId $env:CLIENT_ID `
             -servicePrincipalSecret $env:CLIENT_SECRET `
             -key $env:PAT_TOKEN `
-            -displayName "demo-fabric-Git-Connector3"
+            -displayName $displayName
